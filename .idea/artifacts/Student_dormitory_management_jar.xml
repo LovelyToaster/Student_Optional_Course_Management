@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Student_dormitory_management:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Student_dormitory_management_jar</output-path>
+    <root id="archive" name="Student_dormitory_management.jar">
+      <element id="module-output" name="Student_dormitory_management" />
+    </root>
+  </artifact>
+</component>
