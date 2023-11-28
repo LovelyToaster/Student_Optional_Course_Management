@@ -51,8 +51,8 @@ public class Gui_Student {
                     // 获取选中的行索引
                     String student_no = (String) table.getValueAt(selectedRow, 0);
                     // 显示删除成功的消息框
-                    int i = JOptionPane.showConfirmDialog(frame, "你确定要删除该信息吗？", "注意", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    if (i == JOptionPane.OK_OPTION) {
+                    int i = JOptionPane.showConfirmDialog(frame, "你确定要删除该信息吗？", "注意", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (i == JOptionPane.YES_OPTION) {
                         // 执行删除学生宿舍操作的代码
                         stu.delete_student(student_no);
                         // 从表格模型中删除选中行

@@ -58,6 +58,16 @@ public class Student {
     } //修改学生信息
 
     public void delete_student(String student_no) { // 删除学生信息
+        try {
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(DB_URL, user, password);
+            String sql = "delete from student_optional_course_management.student where no = ? ";
+            PreparedStatement ps= conn.prepareStatement(sql);
+            ps.setString(1,student_no);
+            ps.executeUpdate();
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ResultSet view_student() {
