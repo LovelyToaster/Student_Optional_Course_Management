@@ -78,47 +78,36 @@ public class Gui_Student {
                     stu_dialog.setTitle("请输入信息");
 
                     JTextField stu_no = new JTextField((String) table.getValueAt(selectedRow, 0), 80);
-                    stu_no.setEditable(false);
                     JTextField stu_name = new JTextField((String) table.getValueAt(selectedRow, 1), 80);
-                    JTextField stu_institute = new JTextField((String) table.getValueAt(selectedRow, 3), 80);
-                    JTextField stu_dormitory = new JTextField((String) table.getValueAt(selectedRow, 4), 80);
-                    JTextField stu_dormitory_number = new JTextField((String) table.getValueAt(selectedRow, 5), 80);
-                    JTextField stu_phone = new JTextField((String) table.getValueAt(selectedRow, 6), 80);
-
-                    String[] sex = {"男", "女"};
-                    JComboBox sexComboBox = new JComboBox(sex);
+                    JTextField stu_faculties = new JTextField((String) table.getValueAt(selectedRow, 2), 80);
+                    JTextField stu_optional_course = new JTextField((String) table.getValueAt(selectedRow, 3), 80);
+                    stu_no.setEditable(false);
 
                     JPanel panel = new JPanel(new GridLayout(7, 2));
                     panel.add(new JLabel("学号"));
                     panel.add(stu_no);
                     panel.add(new JLabel("姓名"));
                     panel.add(stu_name);
-                    panel.add(new JLabel("性别"));
-                    panel.add(sexComboBox);
-                    panel.add(new JLabel("院部"));
-                    panel.add(stu_institute);
-                    panel.add(new JLabel("宿舍楼"));
-                    panel.add(stu_dormitory);
-                    panel.add(new JLabel("宿舍号"));
-                    panel.add(stu_dormitory_number);
-                    panel.add(new JLabel("电话"));
-                    panel.add(stu_phone);
+                    panel.add(new JLabel("院系"));
+                    panel.add(stu_faculties);
+                    panel.add(new JLabel("选课情况"));
+                    panel.add(stu_optional_course);
 
                     confirmButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            Student s = new Student();
-//                            s.no = stu_no.getText();
-                            s.name = stu_name.getText();
-//                            int i = stu.modify_student(s.no, s);
-//                            if (i == 4) {
-//                                JOptionPane.showMessageDialog(frame, "修改失败,电话发生重复！");
-//                            } else {
-////                                Student Student_info = stu.search_student(s.no, s, 0);
-//                                stu_view.setRowCount(0);
-////                                stu_view.addRow(stu.get_student(Student_info));
-//                                stu_dialog.dispose();
-//                            }
+                            String s_no = stu_no.getText();
+                            String s_name = stu_name.getText();
+                            String s_faculties = stu_faculties.getText();
+                            String s_optional_course = stu_optional_course.getText();
+                            int flag = stu.modify_student(s_no, s_name, s_faculties, s_optional_course);
+                            if (flag == 1) {
+                                JOptionPane.showMessageDialog(frame, "修改失败,重复选课!");
+                            } else {
+                                stu_view.setRowCount(0);
+                                stu_view.addRow(new Object[]{s_no,s_name,s_faculties,s_optional_course});
+                                stu_dialog.dispose();
+                            }
                         }
                     });
                     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));

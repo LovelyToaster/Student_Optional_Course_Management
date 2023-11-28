@@ -27,25 +27,25 @@ public class Student {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
             if (type.equals("no"))
-                sql = "select * from student_optional_course_management.student where no = ?";
+                sql = "select * from student where no = ?";
             if (type.equals("name"))
-                sql = "select * from student_optional_course_management.student where name like ?";
+                sql = "select * from student where name like ?";
             if (type.equals("faculties")) {
                 if (stu.equals("null"))
-                    sql = "select distinct faculties from student_optional_course_management.student ";
+                    sql = "select distinct faculties from student ";
                 else
-                    sql = "select * from student_optional_course_management.student where faculties = ?";
+                    sql = "select * from student where faculties = ?";
             }
             if (type.equals("optional_course")) {
                 if (stu.equals("null"))
-                    sql = "select distinct optional_course from student_optional_course_management.student ";
+                    sql = "select distinct optional_course from student ";
                 else
-                    sql = "select * from student_optional_course_management.student where optional_course = ?";
+                    sql = "select * from student where optional_course = ?";
             }
             PreparedStatement ps = conn.prepareStatement(sql);
             if (type.equals("name"))
                 ps.setString(1, "%" + stu + "%");
-            else if(!stu.equals("null"))
+            else if (!stu.equals("null"))
                 ps.setString(1, stu);
             return ps.executeQuery();
         } catch (ClassNotFoundException | SQLException e) {
@@ -53,17 +53,42 @@ public class Student {
         }
     }
 
-    public int modify_student(String student_no, Student stu) { // 修改学生信息
-        return 0;
+    public int modify_student(String s_no, String s_name, String s_faculties, String s_optional_course) { // 修改学生信息
+        try {
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(DB_URL, user, password);
+            String optional_course = "select optional_course from student where no = ? and optional_course = ?";
+            PreparedStatement optional_course_ps = conn.prepareStatement(optional_course);
+            optional_course_ps.setString(1, s_no);
+            optional_course_ps.setString(2, s_optional_course);
+            ResultSet rs = optional_course_ps.executeQuery();
+            while (rs.next()){
+                if (!rs.getString(1).equals(s_optional_course))
+                    return 1;
+            }
+
+            String sql = "update student set name = ? , faculties = ? , optional_course = ? where no = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, s_name);
+            ps.setString(2, s_faculties);
+            ps.setString(3, s_optional_course);
+            ps.setString(4, s_no);
+            ps.executeUpdate();
+            return 0;
+        } catch (ClassNotFoundException |
+                 SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     } //修改学生信息
 
     public void delete_student(String student_no) { // 删除学生信息
         try {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
-            String sql = "delete from student_optional_course_management.student where no = ? ";
-            PreparedStatement ps= conn.prepareStatement(sql);
-            ps.setString(1,student_no);
+            String sql = "delete from student where no = ? ";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, student_no);
             ps.executeUpdate();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
