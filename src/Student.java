@@ -2,7 +2,6 @@
 import java.sql.*;
 
 public class Student {
-    String no;
     String name;
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://localhost:3306/student_optional_course_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
@@ -22,14 +21,32 @@ public class Student {
         }
     }
 
-    public ResultSet search_student(String type,String stu) { // 查找学生信息
+    public ResultSet search_student(String type, String stu) { // 查找学生信息
         try {
+            String sql = null;
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
-            String sql = "select * from student_optional_course_management.student where ? = ?";
-            PreparedStatement ps=conn.prepareStatement(sql);
-            ps.setString(1,type);
-            ps.setString(2,stu);
+            if (type.equals("no"))
+                sql = "select * from student_optional_course_management.student where no = ?";
+            if (type.equals("name"))
+                sql = "select * from student_optional_course_management.student where name like ?";
+            if (type.equals("faculties")) {
+                if (stu.equals("null"))
+                    sql = "select distinct faculties from student_optional_course_management.student ";
+                else
+                    sql = "select * from student_optional_course_management.student where faculties = ?";
+            }
+            if (type.equals("optional_course")) {
+                if (stu.equals("null"))
+                    sql = "select distinct optional_course from student_optional_course_management.student ";
+                else
+                    sql = "select * from student_optional_course_management.student where optional_course = ?";
+            }
+            PreparedStatement ps = conn.prepareStatement(sql);
+            if (type.equals("name"))
+                ps.setString(1, "%" + stu + "%");
+            else if(!stu.equals("null"))
+                ps.setString(1, stu);
             return ps.executeQuery();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
@@ -38,18 +55,18 @@ public class Student {
 
     public int modify_student(String student_no, Student stu) { // 修改学生信息
         return 0;
-    }
+    } //修改学生信息
 
     public void delete_student(String student_no) { // 删除学生信息
     }
 
-    public ResultSet view_sql() {
+    public ResultSet view_student() {
         try {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
             String sql = "select * from student_optional_course_management.student";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            return stmt.executeQuery();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            return ps.executeQuery();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
