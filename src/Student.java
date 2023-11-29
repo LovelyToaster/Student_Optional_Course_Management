@@ -73,7 +73,7 @@ public class Student {
                 sql = "select * from student where name like ?";
             if (type.equals("faculties")) {
                 if (stu.equals("null"))
-                    sql = "select distinct faculties from student ";
+                    sql = "select distinct faculties from faculties ";
                 else
                     sql = "select * from student where faculties = ?";
             }

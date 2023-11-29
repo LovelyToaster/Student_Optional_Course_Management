@@ -54,7 +54,17 @@ public class Gui_Student {
 
         JTextField noTextField = new JTextField();
         JTextField nameTextField = new JTextField();
-        JTextField facultiesTextField = new JTextField();
+
+        //添加院系单选框
+        JComboBox facultiesComboBox = new JComboBox();
+        ResultSet rs_faculties = stu.search_student("faculties", "null");
+        try {
+            while (rs_faculties.next()) {
+                facultiesComboBox.addItem(rs_faculties.getString(1));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         //创建复选框
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
@@ -97,7 +107,7 @@ public class Gui_Student {
         inputPanel_lable.add(nameLabel);
         inputPanel_text.add(nameTextField);
         inputPanel_lable.add(facultiesLabel);
-        inputPanel_text.add(facultiesTextField);
+        inputPanel_text.add(facultiesComboBox);
         inputPanel_lable.add(optional_courseLabel);
         inputPanel_text.add(scrollPane);
 
@@ -114,7 +124,7 @@ public class Gui_Student {
                 List selectedValues = list.getSelectedValuesList();
                 String stu_no = noTextField.getText();
                 String stu_name = nameTextField.getText();
-                String stu_faculties = facultiesTextField.getText();
+                String stu_faculties = (String) facultiesComboBox.getSelectedItem();
                 int flag = stu.add_student(stu_no, stu_name, stu_faculties, selectedValues);
                 if (flag == 0) {
                     JOptionPane.showMessageDialog(frame, "添加成功!");
