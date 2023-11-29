@@ -115,8 +115,14 @@ public class Gui_Student {
                 String stu_no = noTextField.getText();
                 String stu_name = nameTextField.getText();
                 String stu_faculties = facultiesTextField.getText();
-                stu.add_student(stu_no, stu_name, stu_faculties, selectedValues);
-                System.out.println("测试");
+                int flag = stu.add_student(stu_no, stu_name, stu_faculties, selectedValues);
+                if (flag == 0) {
+                    JOptionPane.showMessageDialog(frame, "添加成功!");
+                    gui.Main_Frame(stu, user, login);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "添加失败!");
+                    gui.Main_Frame(stu, user, login);
+                }
             }
         });
 
