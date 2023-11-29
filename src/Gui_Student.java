@@ -56,7 +56,7 @@ public class Gui_Student {
         JTextField nameTextField = new JTextField();
 
         //添加院系单选框
-        JComboBox facultiesComboBox = new JComboBox();
+        JComboBox<String> facultiesComboBox = new JComboBox<>();
         ResultSet rs_faculties = stu.search_student("faculties", "null");
         try {
             while (rs_faculties.next()) {
@@ -68,7 +68,7 @@ public class Gui_Student {
 
         //创建复选框
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-        JComboBox comboBox = new JComboBox<>(comboBoxModel);
+        JComboBox<String> comboBox = new JComboBox<>(comboBoxModel);
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
         ArrayList<String> items = new ArrayList<>();
@@ -83,7 +83,7 @@ public class Gui_Student {
         for (String str : items) {
             listModel.addElement(str);
         }
-        JList list = new JList<>(listModel);
+        JList<String> list = new JList<>(listModel);
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(list);
