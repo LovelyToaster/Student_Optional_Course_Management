@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,8 +10,165 @@ import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Gui_Student {
+    static final Gui gui = new Gui();
+
+    public void Student_Add_Frame(Student stu, String user, Login login) {
+        // 创建主窗口
+        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        frame.setSize(400, 400);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.setLocationRelativeTo(null);
+
+        // 创建面板
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBackground(new Color(135, 206, 235));
+
+        // 创建标题标签
+        JLabel titleLabel = new JLabel("添加学生信息", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
+        titleLabel.setForeground(Color.WHITE);
+
+        // 创建输入框和标签
+        JPanel inputPanel_lable = new JPanel();
+        inputPanel_lable.setLayout(new GridLayout(7, 2));
+        inputPanel_lable.setBackground(new Color(135, 206, 235));
+
+        JPanel inputPanel_text = new JPanel();
+        inputPanel_text.setLayout(new GridLayout(7, 2));
+        inputPanel_text.setBackground(new Color(135, 206, 235));
+
+        JLabel noLabel = new JLabel("学号：");
+        JLabel nameLabel = new JLabel("姓名：");
+        JLabel facultiesLabel = new JLabel("院系：");
+        JLabel optional_courseLabel = new JLabel("选课信息：");
+
+        noLabel.setFont(new Font("宋体", Font.BOLD, 20));
+        nameLabel.setFont(new Font("宋体", Font.BOLD, 20));
+        facultiesLabel.setFont(new Font("宋体", Font.BOLD, 20));
+        optional_courseLabel.setFont(new Font("宋体", Font.BOLD, 20));
+
+        JTextField noTextField = new JTextField();
+        JTextField nameTextField = new JTextField();
+        JTextField facultiesTextField = new JTextField();
+
+        //创建复选框
+        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
+        JComboBox comboBox = new JComboBox<>(comboBoxModel);
+
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        ArrayList<String> items = new ArrayList<>();
+        ResultSet rs = stu.search_student("course", "null");
+        try {
+            while (rs.next()) {
+                items.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        for (String str : items) {
+            listModel.addElement(str);
+        }
+        JList list = new JList<>(listModel);
+        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        JScrollPane scrollPane = new JScrollPane(list);
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    JList<String> source = (JList<String>) e.getSource();
+                    Object[] selectedValues = source.getSelectedValues();
+                    comboBoxModel.removeAllElements();
+                    for (Object value : selectedValues) {
+                        comboBoxModel.addElement((String) value);
+                    }
+                }
+            }
+        });
+
+        // 组件添加到面板
+        inputPanel_lable.add(noLabel);
+        inputPanel_text.add(noTextField);
+        inputPanel_lable.add(nameLabel);
+        inputPanel_text.add(nameTextField);
+        inputPanel_lable.add(facultiesLabel);
+        inputPanel_text.add(facultiesTextField);
+        inputPanel_lable.add(optional_courseLabel);
+        inputPanel_text.add(scrollPane);
+
+        // 创建添加按钮
+        JButton addButton = new JButton("添加");
+        addButton.setBackground(new Color(70, 130, 180));
+        addButton.setForeground(Color.WHITE);
+        addButton.setFocusPainted(false);
+        addButton.setBorderPainted(false);
+
+        // 添加按钮点击事件监听器
+        addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                List selectedValues = list.getSelectedValuesList();
+                String stu_no = noTextField.getText();
+                String stu_name = nameTextField.getText();
+                String stu_faculties = facultiesTextField.getText();
+                stu.add_student(stu_no, stu_name, stu_faculties, selectedValues);
+                System.out.println("测试");
+            }
+        });
+
+        // 将组件添加到面板中
+        panel.add(titleLabel, BorderLayout.NORTH);
+        panel.add(inputPanel_lable, BorderLayout.LINE_START);
+        panel.add(inputPanel_text, BorderLayout.CENTER);
+        panel.add(addButton, BorderLayout.SOUTH);
+
+        // 将面板添加到主窗口中
+        frame.add(panel, BorderLayout.CENTER);
+
+        // 显示主窗口
+        frame.setVisible(true);
+        frame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                gui.Main_Frame(stu, user, login);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
+    }
+
     public void Student_Management_Frame(Student stu, String user, Login login) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(700, 700);
@@ -17,7 +176,7 @@ public class Gui_Student {
         frame.setLocationRelativeTo(null);
 
         // 创建表格模型
-        String[] columnNames = {"学号", "姓名", "院系", "选课"};
+        String[] columnNames = {"学号", "姓名", "院系", "选课数量"};
         JTable table = new JTable() {
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -105,7 +264,7 @@ public class Gui_Student {
                                 JOptionPane.showMessageDialog(frame, "修改失败,重复选课!");
                             } else {
                                 stu_view.setRowCount(0);
-                                stu_view.addRow(new Object[]{s_no,s_name,s_faculties,s_optional_course});
+                                stu_view.addRow(new Object[]{s_no, s_name, s_faculties, s_optional_course});
                                 stu_dialog.dispose();
                             }
                         }
@@ -263,7 +422,6 @@ public class Gui_Student {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                Gui gui = new Gui();
                 gui.Main_Frame(stu, user, login);
             }
 
@@ -291,6 +449,95 @@ public class Gui_Student {
             public void windowDeactivated(WindowEvent e) {
 
             }
+        });
+    }
+
+    public void Student_View_Frame(Student stu, String user, Login login) {
+        // 创建主窗口
+        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        frame.setSize(700, 700);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.setLocationRelativeTo(null);
+
+        //创建显示区域
+        String[] columnNames = {"学号", "姓名", "院系", "选课数量"};
+        JTable table = new JTable() {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
+        stu_view.setColumnIdentifiers(columnNames);
+        table.getTableHeader().setReorderingAllowed(false);
+        ResultSet rs = stu.view_student();
+        try {
+            while (rs.next()) {
+                stu_view.addRow(stu.get_student(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 创建面板
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBackground(new Color(135, 206, 235));
+
+        // 创建标题标签
+        JLabel titleLabel = new JLabel("所有的学生宿舍信息", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
+        titleLabel.setForeground(Color.WHITE);
+
+        // 创建滚动面板
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(table);
+
+        // 将组件添加到面板中
+        panel.add(titleLabel, BorderLayout.PAGE_START);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // 将面板添加到主窗口中
+        frame.add(panel, BorderLayout.CENTER);
+
+        // 显示主窗口
+        frame.setVisible(true);
+
+        frame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                gui.Main_Frame(stu, user, login);
+            }
+
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+
         });
     }
 }

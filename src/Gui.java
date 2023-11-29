@@ -9,9 +9,9 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class Gui {
+    static final Gui_Student gui_student=new Gui_Student();
     public void Login_Frame(Student stu) throws IOException, ClassNotFoundException {
         Login login = new Login();
         login.user_out();
@@ -197,7 +197,7 @@ public class Gui {
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                View_Frame(stu, user, login);
+                gui_student.Student_View_Frame(stu, user, login);
             }
         });
 
@@ -279,121 +279,65 @@ public class Gui {
     }
 
     public void Add_Frame(Student stu, String user, Login login) {
-        // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
-        frame.setSize(400, 400);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(300, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
 
-        // 创建面板
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new GridLayout(4, 1));
         panel.setBackground(new Color(135, 206, 235));
 
-        // 创建标题标签
-        JLabel titleLabel = new JLabel("添加学生信息", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
-        titleLabel.setForeground(Color.WHITE);
+        // 创建按钮
+        JButton TeacherButton = new JButton("添加教师信息");
+        TeacherButton.setBackground(new Color(70, 130, 180));
+        TeacherButton.setFont(new Font("宋体", Font.BOLD, 20));
+        TeacherButton.setForeground(Color.WHITE);
+        TeacherButton.setFocusPainted(false);
+        TeacherButton.setBorderPainted(false);
 
-        // 创建输入框和标签
-        JPanel inputPanel_lable = new JPanel();
-        inputPanel_lable.setLayout(new GridLayout(10, 2));
-        inputPanel_lable.setBackground(new Color(135, 206, 235));
+        JButton StudentButton = new JButton("添加学生信息");
+        StudentButton.setBackground(new Color(70, 130, 180));
+        StudentButton.setFont(new Font("宋体", Font.BOLD, 20));
+        StudentButton.setForeground(Color.WHITE);
+        StudentButton.setFocusPainted(false);
+        StudentButton.setBorderPainted(false);
 
-        JPanel inputPanel_text = new JPanel();
-        inputPanel_text.setLayout(new GridLayout(10, 2));
-        inputPanel_text.setBackground(new Color(135, 206, 235));
+        JButton CourseButton = new JButton("添加选课信息");
+        CourseButton.setBackground(new Color(70, 130, 180));
+        CourseButton.setFont(new Font("宋体", Font.BOLD, 20));
+        CourseButton.setForeground(Color.WHITE);
+        CourseButton.setFocusPainted(false);
+        CourseButton.setBorderPainted(false);
 
-        JLabel noLabel = new JLabel("学号：");
-        JLabel nameLabel = new JLabel("姓名：");
-        JLabel sexLabel = new JLabel("性别：");
-        JLabel instituteLabel = new JLabel("院部：");
-        JLabel dormitoryLabel = new JLabel("宿舍楼：");
-        JLabel dormitory_numberLabel = new JLabel("宿舍号：");
-        JLabel phoneLabel = new JLabel("电话：");
+        JButton ScoreButton = new JButton("添加成绩信息");
+        ScoreButton.setBackground(new Color(70, 130, 180));
+        ScoreButton.setFont(new Font("宋体", Font.BOLD, 20));
+        ScoreButton.setForeground(Color.WHITE);
+        ScoreButton.setFocusPainted(false);
+        ScoreButton.setBorderPainted(false);
 
-        noLabel.setFont(new Font("宋体", Font.BOLD, 20));
-        nameLabel.setFont(new Font("宋体", Font.BOLD, 20));
-        sexLabel.setFont(new Font("宋体", Font.BOLD, 20));
-        instituteLabel.setFont(new Font("宋体", Font.BOLD, 20));
-        dormitoryLabel.setFont(new Font("宋体", Font.BOLD, 20));
-        dormitory_numberLabel.setFont(new Font("宋体", Font.BOLD, 20));
-        phoneLabel.setFont(new Font("宋体", Font.BOLD, 20));
-
-        JTextField noTextField = new JTextField();
-        JTextField nameTextField = new JTextField();
-        JTextField instituteTextField = new JTextField();
-        JTextField dormitoryTextField = new JTextField();
-        JTextField dormitory_numberTextField = new JTextField();
-        JTextField phoneTextField = new JTextField();
-
-        String[] sex = {"男", "女"};
-        JComboBox sexComboBox = new JComboBox(sex);
-
-        inputPanel_lable.add(noLabel);
-        inputPanel_text.add(noTextField);
-        inputPanel_lable.add(nameLabel);
-        inputPanel_text.add(nameTextField);
-        inputPanel_lable.add(sexLabel);
-        inputPanel_text.add(sexComboBox);
-        inputPanel_lable.add(instituteLabel);
-        inputPanel_text.add(instituteTextField);
-        inputPanel_lable.add(dormitoryLabel);
-        inputPanel_text.add(dormitoryTextField);
-        inputPanel_lable.add(dormitory_numberLabel);
-        inputPanel_text.add(dormitory_numberTextField);
-        inputPanel_lable.add(phoneLabel);
-        inputPanel_text.add(phoneTextField);
-
-        // 创建添加按钮
-        JButton addButton = new JButton("添加");
-        addButton.setBackground(new Color(70, 130, 180));
-        addButton.setForeground(Color.WHITE);
-        addButton.setFocusPainted(false);
-        addButton.setBorderPainted(false);
-
-        // 添加按钮点击事件监听器
-        addButton.addActionListener(new ActionListener() {
+        StudentButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                int j = 0;
-                Student stu_data = new Student();
-//                stu_data.no = noTextField.getText();
-                stu_data.name = nameTextField.getText();
-                int i = stu.add_student(stu_data);
-                if (i == 0) {
-                    int option = JOptionPane.showConfirmDialog(frame, "添加成功,要继续添加吗?", "提示", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    if (option == JOptionPane.OK_OPTION) {
-                        frame.dispose();
-                        Add_Frame(stu, user, login);
-                    } else {
-                        frame.dispose();
-                        Main_Frame(stu, user, login);
-                    }
-                } else if (i == 1) {
-                    JOptionPane.showMessageDialog(frame, "添加失败,学号发生重复！");
-                    return;
-                } else if (i == 4) {
-                    JOptionPane.showMessageDialog(frame, "添加失败,电话发生重复！");
-                    return;
-                } else {
-                    JOptionPane.showMessageDialog(frame, "添加失败,信息未输入完整！");
-                    return;
-                }
+                frame.dispose();
+                gui_student.Student_Add_Frame(stu, user, login);
             }
         });
 
         // 将组件添加到面板中
-        panel.add(titleLabel, BorderLayout.NORTH);
-        panel.add(inputPanel_lable, BorderLayout.LINE_START);
-        panel.add(inputPanel_text, BorderLayout.CENTER);
-        panel.add(addButton, BorderLayout.SOUTH);
+        panel.add(TeacherButton);
+        panel.add(StudentButton);
+        panel.add(CourseButton);
+        panel.add(ScoreButton);
 
         // 将面板添加到主窗口中
         frame.add(panel, BorderLayout.CENTER);
 
         // 显示主窗口
         frame.setVisible(true);
+
         frame.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -402,7 +346,7 @@ public class Gui {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                Main_Frame(stu, user, login);
+
             }
 
             @Override
@@ -532,91 +476,5 @@ public class Gui {
     }
 
     public void View_Frame(Student stu, String user, Login login) {
-        // 创建主窗口
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
-        frame.setSize(700, 700);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        frame.setLocationRelativeTo(null);
-
-        //创建显示区域
-        String[] columnNames = {"学号", "姓名", "院系", "选课"};
-        JTable table = new JTable() {
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
-        stu_view.setColumnIdentifiers(columnNames);
-        table.getTableHeader().setReorderingAllowed(false);
-        ResultSet rs = stu.view_student();
-        try {
-            while (rs.next()) {
-                stu_view.addRow(stu.get_student(rs));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        // 创建面板
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBackground(new Color(135, 206, 235));
-
-        // 创建标题标签
-        JLabel titleLabel = new JLabel("所有的学生宿舍信息", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
-        titleLabel.setForeground(Color.WHITE);
-
-        // 创建滚动面板
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportView(table);
-
-        // 将组件添加到面板中
-        panel.add(titleLabel, BorderLayout.PAGE_START);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        // 将面板添加到主窗口中
-        frame.add(panel, BorderLayout.CENTER);
-
-        // 显示主窗口
-        frame.setVisible(true);
-
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                Main_Frame(stu, user, login);
-            }
-
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-
-        });
     }
 }
