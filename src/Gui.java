@@ -15,7 +15,6 @@ public class Gui {
 
     public void Login_Frame(Student stu) throws IOException, ClassNotFoundException {
         Login login = new Login();
-        login.user_out();
         JFrame frame = new JFrame("登录");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 250);
@@ -44,7 +43,7 @@ public class Gui {
                     Main_Frame(stu, frame_name, login);
                 } else if (i == 2) {
                     JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
-                } else {
+                } else if (i == 1) {
                     JOptionPane.showMessageDialog(frame, "用户名或密码错误");
                 }
             }
@@ -58,9 +57,9 @@ public class Gui {
                 int i = login.user_register(frame_new_name, frame_new_password);
                 if (i == 0) {
                     JOptionPane.showMessageDialog(frame, "注册成功");
-                } else if (i == 1) {
+                } else if (i == -2) {
                     JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
-                } else {
+                } else if (i == -1) {
                     JOptionPane.showMessageDialog(frame, "用户名重复");
                 }
             }
