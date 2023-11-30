@@ -10,6 +10,9 @@ public class Student {
 
     public int add_student(String stu_no, String stu_name, String stu_faculties, List stu) { // 添加学生
         int flag=-1;
+        if(stu_no.isEmpty() || stu_name.isEmpty()){
+            return -2;
+        }
         try {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);

@@ -107,7 +107,7 @@ public class Gui_Student {
         inputPanel.add(facultiesComboBox);
         inputPanel.add(optional_courseLabel);
 
-        JPanel panel_scrollPane=new JPanel(new GridLayout(1,1));
+        JPanel panel_scrollPane = new JPanel(new GridLayout(1, 1));
         panel_scrollPane.add(scrollPane);
 
         // 创建添加按钮
@@ -129,14 +129,19 @@ public class Gui_Student {
                     JOptionPane.showMessageDialog(frame, "添加成功!");
                     gui.Main_Frame(stu, user, login);
                 } else {
-                    JOptionPane.showMessageDialog(frame, "添加失败!");
-                    gui.Main_Frame(stu, user, login);
+                    if (flag == -1)
+                        JOptionPane.showMessageDialog(frame, "添加失败!请检查数据");
+
+                    if (flag == -2)
+                        JOptionPane.showMessageDialog(frame, "添加失败!数据输入不完整");
+                    Student_Add_Frame(stu, user, login);
+
                 }
             }
         });
 
         // 将组件添加到面板中
-        JPanel panel_center=new JPanel(new GridLayout(2,1));
+        JPanel panel_center = new JPanel(new GridLayout(2, 1));
         panel_center.add(inputPanel);
         panel_center.add(panel_scrollPane);
         panel.add(titleLabel, BorderLayout.NORTH);
