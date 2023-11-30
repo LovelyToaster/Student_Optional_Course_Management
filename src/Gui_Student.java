@@ -34,13 +34,10 @@ public class Gui_Student {
         titleLabel.setForeground(Color.WHITE);
 
         // 创建输入框和标签
-        JPanel inputPanel_lable = new JPanel();
-        inputPanel_lable.setLayout(new GridLayout(7, 2));
-        inputPanel_lable.setBackground(new Color(135, 206, 235));
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(4, 2));
+        inputPanel.setBackground(new Color(135, 206, 235));
 
-        JPanel inputPanel_text = new JPanel();
-        inputPanel_text.setLayout(new GridLayout(7, 2));
-        inputPanel_text.setBackground(new Color(135, 206, 235));
 
         JLabel noLabel = new JLabel("学号：");
         JLabel nameLabel = new JLabel("姓名：");
@@ -102,14 +99,16 @@ public class Gui_Student {
         });
 
         // 组件添加到面板
-        inputPanel_lable.add(noLabel);
-        inputPanel_text.add(noTextField);
-        inputPanel_lable.add(nameLabel);
-        inputPanel_text.add(nameTextField);
-        inputPanel_lable.add(facultiesLabel);
-        inputPanel_text.add(facultiesComboBox);
-        inputPanel_lable.add(optional_courseLabel);
-        inputPanel_text.add(scrollPane);
+        inputPanel.add(noLabel);
+        inputPanel.add(noTextField);
+        inputPanel.add(nameLabel);
+        inputPanel.add(nameTextField);
+        inputPanel.add(facultiesLabel);
+        inputPanel.add(facultiesComboBox);
+        inputPanel.add(optional_courseLabel);
+
+        JPanel panel_scrollPane=new JPanel(new GridLayout(1,1));
+        panel_scrollPane.add(scrollPane);
 
         // 创建添加按钮
         JButton addButton = new JButton("添加");
@@ -137,9 +136,11 @@ public class Gui_Student {
         });
 
         // 将组件添加到面板中
+        JPanel panel_center=new JPanel(new GridLayout(2,1));
+        panel_center.add(inputPanel);
+        panel_center.add(panel_scrollPane);
         panel.add(titleLabel, BorderLayout.NORTH);
-        panel.add(inputPanel_lable, BorderLayout.LINE_START);
-        panel.add(inputPanel_text, BorderLayout.CENTER);
+        panel.add(panel_center, BorderLayout.CENTER);
         panel.add(addButton, BorderLayout.SOUTH);
 
         // 将面板添加到主窗口中
