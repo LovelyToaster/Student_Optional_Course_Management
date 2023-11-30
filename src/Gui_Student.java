@@ -218,6 +218,82 @@ public class Gui_Student {
         JButton modButton = new JButton("修改");
         JButton searchButton = new JButton("查询");
         JButton refreshButton = new JButton("刷新");
+        JButton viewButton = new JButton("详细");
+        viewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    JDialog stu_dialog = new JDialog();
+                    JButton confirmButton = new JButton("确认");
+                    stu_dialog.setSize(400, 300);
+                    stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    stu_dialog.setLocationRelativeTo(null);
+                    stu_dialog.setTitle("详细信息");
+
+                    JTextField stu_no = new JTextField((String) table.getValueAt(selectedRow, 0), 80);
+                    JTextField stu_name = new JTextField((String) table.getValueAt(selectedRow, 1), 80);
+                    JTextField stu_faculties = new JTextField((String) table.getValueAt(selectedRow, 2), 80);
+
+                    stu_no.setEditable(false);
+                    stu_name.setEditable(false);
+                    stu_faculties.setEditable(false);
+
+                    DefaultListModel<String> optional_course_listModel = new DefaultListModel<>();
+                    ArrayList<String> items = new ArrayList<>();
+                    ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
+                    try {
+                        if(rs.next()){
+                            do{
+                                items.add(rs.getString(1));
+                            }while (rs.next());
+                        }
+                        else
+                            items.add("没有选课记录");
+                    } catch (SQLException s) {
+                        throw new RuntimeException(s);
+                    }
+                    for (String str : items) {
+                        optional_course_listModel.addElement(str);
+                    }
+                    JList<String> optional_course_list = new JList<>(optional_course_listModel);
+                    JScrollPane optional_course_ScrollPane = new JScrollPane(optional_course_list);
+
+                    JPanel panel = new JPanel(new GridLayout(4,2));
+                    JPanel optional_course_ScrollPane_panel = new JPanel(new GridLayout(1,1));
+                    JPanel CENTER_panel = new JPanel(new GridLayout(2,1));
+                    panel.add(new JLabel("学号"));
+                    panel.add(stu_no);
+                    panel.add(new JLabel("姓名"));
+                    panel.add(stu_name);
+                    panel.add(new JLabel("院系"));
+                    panel.add(stu_faculties);
+                    panel.add(new JLabel("选课情况"));
+                    optional_course_ScrollPane_panel.add(optional_course_ScrollPane);
+
+                    confirmButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            stu_dialog.dispose();
+                        }
+                    });
+                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                    buttonPanel.add(confirmButton);
+
+                    CENTER_panel.add(panel);
+                    CENTER_panel.add(optional_course_ScrollPane_panel);
+                    stu_dialog.getContentPane().setLayout(new BorderLayout());
+                    stu_dialog.getContentPane().add(CENTER_panel, BorderLayout.CENTER);
+                    stu_dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+                    stu_dialog.setModal(true);
+                    stu_dialog.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "请选择要查看的学生!");
+                }
+
+            }
+        });
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -420,6 +496,7 @@ public class Gui_Student {
             }
         });
         JPanel buttonPanel = new JPanel();
+        buttonPanel.add(viewButton);
         buttonPanel.add(searchButton);
         buttonPanel.add(modButton);
         buttonPanel.add(deleteButton);

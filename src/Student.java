@@ -83,6 +83,9 @@ public class Student {
                 else
                     sql = "select * from student where no = (select student_no from optional_course where course_no = (select course_no from course where course_name = ?))";
             }
+            if(type.equals("optional_course_sno")){
+                sql= "select course_name from course where course_no in (select course_no from optional_course where student_no = ?)";
+            }
             if (type.equals("course")) {
                 sql = "select course_name from course";
             }
