@@ -249,12 +249,11 @@ public class Gui_Student {
                     ArrayList<String> items = new ArrayList<>();
                     ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
                     try {
-                        if(rs.next()){
-                            do{
+                        if (rs.next()) {
+                            do {
                                 items.add(rs.getString(1));
-                            }while (rs.next());
-                        }
-                        else
+                            } while (rs.next());
+                        } else
                             items.add("没有选课记录");
                     } catch (SQLException s) {
                         throw new RuntimeException(s);
@@ -265,9 +264,9 @@ public class Gui_Student {
                     JList<String> optional_course_list = new JList<>(optional_course_listModel);
                     JScrollPane optional_course_ScrollPane = new JScrollPane(optional_course_list);
 
-                    JPanel panel = new JPanel(new GridLayout(4,2));
-                    JPanel optional_course_ScrollPane_panel = new JPanel(new GridLayout(1,1));
-                    JPanel CENTER_panel = new JPanel(new GridLayout(2,1));
+                    JPanel panel = new JPanel(new GridLayout(4, 2));
+                    JPanel optional_course_ScrollPane_panel = new JPanel(new GridLayout(1, 1));
+                    JPanel CENTER_panel = new JPanel(new GridLayout(2, 1));
                     panel.add(new JLabel("学号"));
                     panel.add(stu_no);
                     panel.add(new JLabel("姓名"));

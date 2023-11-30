@@ -9,8 +9,8 @@ public class Student {
     static final String password = "zyn20030527";
 
     public int add_student(String stu_no, String stu_name, String stu_faculties, List stu) { // 添加学生
-        int flag=-1;
-        if(stu_no.isEmpty() || stu_name.isEmpty()){
+        int flag = -1;
+        if (stu_no.isEmpty() || stu_name.isEmpty()) {
             return -2;
         }
         try {
@@ -30,7 +30,7 @@ public class Student {
                 ps_insert_2.executeUpdate();
             }
             count();
-            flag=0;
+            flag = 0;
             return flag;
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
@@ -86,8 +86,8 @@ public class Student {
                 else
                     sql = "select * from student where no = (select student_no from optional_course where course_no = (select course_no from course where course_name = ?))";
             }
-            if(type.equals("optional_course_sno")){
-                sql= "select course_name from course where course_no in (select course_no from optional_course where student_no = ?)";
+            if (type.equals("optional_course_sno")) {
+                sql = "select course_name from course where course_no in (select course_no from optional_course where student_no = ?)";
             }
             if (type.equals("course")) {
                 sql = "select course_name from course";
@@ -125,7 +125,7 @@ public class Student {
             ps.setString(4, s_no);
             ps.executeUpdate();
             return 0;
-        } catch (ClassNotFoundException |SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
 

@@ -11,7 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Gui {
-    static final Gui_Student gui_student=new Gui_Student();
+    static final Gui_Student gui_student = new Gui_Student();
+
     public void Login_Frame(Student stu) throws IOException, ClassNotFoundException {
         Login login = new Login();
         login.user_out();
