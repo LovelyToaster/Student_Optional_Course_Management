@@ -36,15 +36,20 @@ public class Gui {
             public void actionPerformed(ActionEvent e) {
                 String frame_name = accountTextField.getText();
                 String frame_password = String.valueOf(passwordField.getPassword());
-                int i = login.password_verify(frame_name, frame_password);
-                if (i == 0) {
-                    JOptionPane.showMessageDialog(frame, "登录成功");
-                    frame.dispose();
-                    Main_Frame(stu, frame_name, login);
-                } else if (i == 2) {
-                    JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
-                } else if (i == 1) {
-                    JOptionPane.showMessageDialog(frame, "用户名或密码错误");
+                String flag = login.password_verify(frame_name, frame_password);
+                switch (flag) {
+                    case "normal_root" -> {
+                        JOptionPane.showMessageDialog(frame, "登录成功，欢迎管理员" + frame_name + "登录系统");
+                        frame.dispose();
+                        Main_Frame(stu, frame_name, login);
+                    }
+                    case "normal_user" -> {
+                        JOptionPane.showMessageDialog(frame, "登录成功，欢迎用户" + frame_name + "登录系统");
+                        frame.dispose();
+                        Main_Frame(stu, frame_name, login);
+                    }
+                    case "empty" -> JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
+                    case "error" -> JOptionPane.showMessageDialog(frame, "用户名或密码错误");
                 }
             }
         });
@@ -68,13 +73,7 @@ public class Gui {
         restartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String user = JOptionPane.showInputDialog(frame, "请输入要重置的用户名:", "输入", JOptionPane.QUESTION_MESSAGE);
-                int i = login.password_restart(user);
-                if (i == 0) {
-                    JOptionPane.showMessageDialog(frame, "密码重置成功，默认密码为123456!");
-                } else if (i == 1) {
-                    JOptionPane.showMessageDialog(frame, "密码重置失败，未找到用户名!");
-                }
+                JOptionPane.showMessageDialog(frame, "请联系管理员修改密码");
             }
         });
 

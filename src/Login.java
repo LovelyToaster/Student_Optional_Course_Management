@@ -12,7 +12,7 @@ public class Login {
     static final String password = "zyn20030527";
     HashMap<String, String> login_map = new HashMap<>(); // 保存用户账号密码
 
-    public int password_verify(String frame_name, String frame_password) { // 账号密码验证
+    public String password_verify(String frame_name, String frame_password) { // 账号密码验证
         try {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
@@ -20,16 +20,17 @@ public class Login {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, frame_name);
             ResultSet rs = ps.executeQuery();
-            conn.close();
             if (frame_name.isEmpty() || frame_password.isEmpty())
-                return 2;
+                return "empty";
             if (rs.next()) {
-                if (rs.getString(1).equals(frame_password))
-                    return 0;
+                if (rs.getString(1).equals(frame_password) && rs.getString(2).equals("1"))
+                    return "normal_root";
+                else if (rs.getString(1).equals(frame_password) && rs.getString(2).equals("0"))
+                    return "normal_user";
                 else
-                    return 1;
-            } else
-                return 1;
+                    return "error";
+            }
+            return "error";
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -37,7 +38,7 @@ public class Login {
 
     public int user_register(String frame_new_name, String frame_new_password) { // 注册
         try {
-            if(frame_new_name.isEmpty()||frame_new_password.isEmpty())
+            if (frame_new_name.isEmpty() || frame_new_password.isEmpty())
                 return -2;
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
@@ -51,11 +52,6 @@ public class Login {
             System.out.println(e.getMessage());
             return -1;
         }
-    }
-
-    public int password_restart(String user) {
-
-        return 0;
     }
 
     public int password_mod(String user, String password, String restart_password) {
