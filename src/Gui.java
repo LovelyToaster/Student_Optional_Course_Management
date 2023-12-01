@@ -1,19 +1,17 @@
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class Gui {
     static final Gui_Student gui_student = new Gui_Student();
+    static final Login login = new Login();
 
-    public void Login_Frame(Student stu) throws IOException, ClassNotFoundException {
+    public void Login_Frame() throws IOException, ClassNotFoundException {
         Login login = new Login();
         JFrame frame = new JFrame("登录");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,12 +39,12 @@ public class Gui {
                     case "normal_root" -> {
                         JOptionPane.showMessageDialog(frame, "登录成功，欢迎管理员" + frame_name + "登录系统");
                         frame.dispose();
-                        Main_Frame(stu, frame_name, login);
+                        Main_Frame(frame_name, flag);
                     }
                     case "normal_user" -> {
                         JOptionPane.showMessageDialog(frame, "登录成功，欢迎用户" + frame_name + "登录系统");
                         frame.dispose();
-                        Main_Frame(stu, frame_name, login);
+                        Main_Frame(frame_name, flag);
                     }
                     case "empty" -> JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
                     case "error" -> JOptionPane.showMessageDialog(frame, "用户名或密码错误");
@@ -124,7 +122,7 @@ public class Gui {
 
     }
 
-    public void Main_Frame(Student stu, String user, Login login) {
+    public void Main_Frame(String user, String flag) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(500, 600);
@@ -143,21 +141,21 @@ public class Gui {
         titleLabel.setForeground(Color.WHITE);
 
         // 创建按钮
-        JButton addButton = new JButton("添加学生信息");
+        JButton addButton = new JButton("添加信息");
         addButton.setBackground(new Color(70, 130, 180));
         addButton.setFont(new Font("宋体", Font.BOLD, 20));
         addButton.setForeground(Color.WHITE);
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
 
-        JButton managementButton = new JButton("管理学生信息");
+        JButton managementButton = new JButton("管理信息");
         managementButton.setBackground(new Color(70, 130, 180));
         managementButton.setFont(new Font("宋体", Font.BOLD, 20));
         managementButton.setForeground(Color.WHITE);
         managementButton.setFocusPainted(false);
         managementButton.setBorderPainted(false);
 
-        JButton viewButton = new JButton("查看学生信息");
+        JButton viewButton = new JButton("查看信息");
         viewButton.setBackground(new Color(70, 130, 180));
         viewButton.setFont(new Font("宋体", Font.BOLD, 20));
         viewButton.setForeground(Color.WHITE);
@@ -182,21 +180,21 @@ public class Gui {
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Add_Frame(stu, user, login);
+                Add_Frame(user, flag);
             }
         });
 
         managementButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Management_Frame(stu, user, login);
+                Management_Frame(user, flag);
             }
         });
 
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                gui_student.Student_View_Frame(stu, user, login);
+                gui_student.Student_View_Frame(user, flag);
             }
         });
 
@@ -255,7 +253,7 @@ public class Gui {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 try {
-                    Login_Frame(stu);
+                    Login_Frame();
                 } catch (IOException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -277,7 +275,7 @@ public class Gui {
         frame.setVisible(true);
     }
 
-    public void Add_Frame(Student stu, String user, Login login) {
+    public void Add_Frame(String user, String login) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(300, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -321,7 +319,7 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                gui_student.Student_Add_Frame(stu, user, login);
+                gui_student.Student_Add_Frame(user, login);
             }
         });
 
@@ -375,7 +373,7 @@ public class Gui {
         });
     }
 
-    public void Management_Frame(Student stu, String user, Login login) {
+    public void Management_Frame(String user, String login) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(300, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -420,7 +418,7 @@ public class Gui {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 Gui_Student gui_student = new Gui_Student();
-                gui_student.Student_Management_Frame(stu, user, login);
+                gui_student.Student_Management_Frame(user, login);
             }
         });
 

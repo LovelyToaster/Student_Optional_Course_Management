@@ -14,8 +14,9 @@ import java.util.List;
 
 public class Gui_Student {
     static final Gui gui = new Gui();
+    static final Student stu=new Student();
 
-    public void Student_Add_Frame(Student stu, String user, Login login) {
+    public void Student_Add_Frame(String user, String login) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(400, 400);
@@ -127,14 +128,14 @@ public class Gui_Student {
                 int flag = stu.add_student(stu_no, stu_name, stu_faculties, selectedValues);
                 if (flag == 0) {
                     JOptionPane.showMessageDialog(frame, "添加成功!");
-                    gui.Main_Frame(stu, user, login);
+                    gui.Main_Frame(user, login);
                 } else {
                     if (flag == -1)
                         JOptionPane.showMessageDialog(frame, "添加失败!请检查数据");
 
                     if (flag == -2)
                         JOptionPane.showMessageDialog(frame, "添加失败!数据输入不完整");
-                    Student_Add_Frame(stu, user, login);
+                    Student_Add_Frame(user, login);
 
                 }
             }
@@ -161,7 +162,7 @@ public class Gui_Student {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(stu, user, login);
+                gui.Main_Frame(user, login);
             }
 
             @Override
@@ -191,7 +192,7 @@ public class Gui_Student {
         });
     }
 
-    public void Student_Management_Frame(Student stu, String user, Login login) {
+    public void Student_Management_Frame(String user, String login) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(700, 700);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -520,7 +521,7 @@ public class Gui_Student {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(stu, user, login);
+                gui.Main_Frame(user, login);
             }
 
             @Override
@@ -550,7 +551,7 @@ public class Gui_Student {
         });
     }
 
-    public void Student_View_Frame(Student stu, String user, Login login) {
+    public void Student_View_Frame(String user, String login) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(700, 700);
@@ -609,7 +610,7 @@ public class Gui_Student {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(stu, user, login);
+                gui.Main_Frame(user, login);
             }
 
             public void windowClosed(WindowEvent e) {
