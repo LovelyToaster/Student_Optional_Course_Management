@@ -8,10 +8,9 @@ public class Student {
     static final String user = "root";
     static final String password = "zyn20030527";
 
-    public int add_student(String stu_no, String stu_name, String stu_faculties, List stu) { // 添加学生
-        int flag = -1;
+    public String add_student(String stu_no, String stu_name, String stu_faculties, List stu) { // 添加学生
         if (stu_no.isEmpty() || stu_name.isEmpty()) {
-            return -2;
+            return "empty";
         }
         try {
             Class.forName(JDBC_DRIVER);
@@ -30,11 +29,10 @@ public class Student {
                 ps_insert_2.executeUpdate();
             }
             count();
-            flag = 0;
-            return flag;
+            return "normal";
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
-            return flag;
+            return "error";
         }
     }
 

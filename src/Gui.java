@@ -131,14 +131,27 @@ public class Gui {
         frame.setLocationRelativeTo(null);
 
         // 创建面板
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(6, 1));
+        JPanel panel;
+        if (flag.equals("normal_root")) {
+            panel = new JPanel(new GridLayout(7, 1));
+        } else {
+            panel = new JPanel(new GridLayout(6, 1));
+        }
         panel.setBackground(new Color(135, 206, 235));
 
         // 创建标题标签
         JLabel titleLabel = new JLabel("欢迎使用学生宿舍信息管理系统", SwingConstants.CENTER);
         titleLabel.setFont(new Font("宋体", Font.BOLD, 25));
         titleLabel.setForeground(Color.WHITE);
+
+        JLabel userLabel;
+        if (flag.equals("normal_root")) {
+            userLabel = new JLabel("登录管理员:" + user, SwingConstants.CENTER);
+        } else {
+            userLabel = new JLabel("登录用户:" + user, SwingConstants.CENTER);
+        }
+        userLabel.setFont(new Font("宋体", Font.BOLD, 20));
+        userLabel.setForeground(Color.WHITE);
 
         // 创建按钮
         JButton addButton = new JButton("添加信息");
@@ -148,14 +161,20 @@ public class Gui {
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
 
-        JButton managementButton = new JButton("管理信息");
+        JButton managementButton;
+        JButton viewButton = new JButton("查看信息");
+
+        if (flag.equals("normal_root")) {
+            managementButton = new JButton("管理信息");
+        } else {
+            managementButton = new JButton("管理个人信息");
+        }
         managementButton.setBackground(new Color(70, 130, 180));
         managementButton.setFont(new Font("宋体", Font.BOLD, 20));
         managementButton.setForeground(Color.WHITE);
         managementButton.setFocusPainted(false);
         managementButton.setBorderPainted(false);
 
-        JButton viewButton = new JButton("查看信息");
         viewButton.setBackground(new Color(70, 130, 180));
         viewButton.setFont(new Font("宋体", Font.BOLD, 20));
         viewButton.setForeground(Color.WHITE);
@@ -194,7 +213,7 @@ public class Gui {
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                gui_student.Student_View_Frame(user, flag);
+                View_Frame(user, flag);
             }
         });
 
@@ -262,7 +281,10 @@ public class Gui {
 
         // 将组件添加到面板中
         panel.add(titleLabel);
-        panel.add(addButton);
+        panel.add(userLabel);
+        if (flag.equals("normal_root")) {
+            panel.add(addButton);
+        }
         panel.add(managementButton);
         panel.add(viewButton);
         panel.add(passwordmodButton);
@@ -275,7 +297,7 @@ public class Gui {
         frame.setVisible(true);
     }
 
-    public void Add_Frame(String user, String login) {
+    public void Add_Frame(String user, String flag) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(300, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -319,7 +341,7 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                gui_student.Student_Add_Frame(user, login);
+                gui_student.Student_Add_Frame(user, flag);
             }
         });
 
@@ -373,105 +395,110 @@ public class Gui {
         });
     }
 
-    public void Management_Frame(String user, String login) {
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
-        frame.setSize(300, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        frame.setLocationRelativeTo(null);
+    public void Management_Frame(String user, String flag) {
+        if (flag.equals("normal_root")) {
+            JFrame frame = new JFrame("学生宿舍信息管理系统");
+            frame.setSize(300, 400);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+            frame.setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1));
-        panel.setBackground(new Color(135, 206, 235));
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(4, 1));
+            panel.setBackground(new Color(135, 206, 235));
 
-        // 创建按钮
-        JButton TeacherButton = new JButton("管理教师信息");
-        TeacherButton.setBackground(new Color(70, 130, 180));
-        TeacherButton.setFont(new Font("宋体", Font.BOLD, 20));
-        TeacherButton.setForeground(Color.WHITE);
-        TeacherButton.setFocusPainted(false);
-        TeacherButton.setBorderPainted(false);
+            // 创建按钮
+            JButton TeacherButton = new JButton("管理教师信息");
+            TeacherButton.setBackground(new Color(70, 130, 180));
+            TeacherButton.setFont(new Font("宋体", Font.BOLD, 20));
+            TeacherButton.setForeground(Color.WHITE);
+            TeacherButton.setFocusPainted(false);
+            TeacherButton.setBorderPainted(false);
 
-        JButton StudentButton = new JButton("管理学生信息");
-        StudentButton.setBackground(new Color(70, 130, 180));
-        StudentButton.setFont(new Font("宋体", Font.BOLD, 20));
-        StudentButton.setForeground(Color.WHITE);
-        StudentButton.setFocusPainted(false);
-        StudentButton.setBorderPainted(false);
+            JButton StudentButton = new JButton("管理学生信息");
+            StudentButton.setBackground(new Color(70, 130, 180));
+            StudentButton.setFont(new Font("宋体", Font.BOLD, 20));
+            StudentButton.setForeground(Color.WHITE);
+            StudentButton.setFocusPainted(false);
+            StudentButton.setBorderPainted(false);
 
-        JButton CourseButton = new JButton("管理选课信息");
-        CourseButton.setBackground(new Color(70, 130, 180));
-        CourseButton.setFont(new Font("宋体", Font.BOLD, 20));
-        CourseButton.setForeground(Color.WHITE);
-        CourseButton.setFocusPainted(false);
-        CourseButton.setBorderPainted(false);
+            JButton CourseButton = new JButton("管理选课信息");
+            CourseButton.setBackground(new Color(70, 130, 180));
+            CourseButton.setFont(new Font("宋体", Font.BOLD, 20));
+            CourseButton.setForeground(Color.WHITE);
+            CourseButton.setFocusPainted(false);
+            CourseButton.setBorderPainted(false);
 
-        JButton ScoreButton = new JButton("管理成绩信息");
-        ScoreButton.setBackground(new Color(70, 130, 180));
-        ScoreButton.setFont(new Font("宋体", Font.BOLD, 20));
-        ScoreButton.setForeground(Color.WHITE);
-        ScoreButton.setFocusPainted(false);
-        ScoreButton.setBorderPainted(false);
+            JButton ScoreButton = new JButton("管理成绩信息");
+            ScoreButton.setBackground(new Color(70, 130, 180));
+            ScoreButton.setFont(new Font("宋体", Font.BOLD, 20));
+            ScoreButton.setForeground(Color.WHITE);
+            ScoreButton.setFocusPainted(false);
+            ScoreButton.setBorderPainted(false);
 
-        StudentButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                Gui_Student gui_student = new Gui_Student();
-                gui_student.Student_Management_Frame(user, login);
-            }
-        });
+            StudentButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+                    Gui_Student gui_student = new Gui_Student();
+                    gui_student.Student_Management_Frame(user, flag);
+                }
+            });
 
-        // 将组件添加到面板中
-        panel.add(TeacherButton);
-        panel.add(StudentButton);
-        panel.add(CourseButton);
-        panel.add(ScoreButton);
+            // 将组件添加到面板中
+            panel.add(TeacherButton);
+            panel.add(StudentButton);
+            panel.add(CourseButton);
+            panel.add(ScoreButton);
 
-        // 将面板添加到主窗口中
-        frame.add(panel, BorderLayout.CENTER);
+            // 将面板添加到主窗口中
+            frame.add(panel, BorderLayout.CENTER);
 
-        // 显示主窗口
-        frame.setVisible(true);
+            // 显示主窗口
+            frame.setVisible(true);
 
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
+            frame.addWindowListener(new WindowListener() {
+                @Override
+                public void windowOpened(WindowEvent e) {
 
-            }
+                }
 
-            @Override
-            public void windowClosing(WindowEvent e) {
+                @Override
+                public void windowClosing(WindowEvent e) {
 
-            }
+                }
 
-            @Override
-            public void windowClosed(WindowEvent e) {
+                @Override
+                public void windowClosed(WindowEvent e) {
 
-            }
+                }
 
-            @Override
-            public void windowIconified(WindowEvent e) {
+                @Override
+                public void windowIconified(WindowEvent e) {
 
-            }
+                }
 
-            @Override
-            public void windowDeiconified(WindowEvent e) {
+                @Override
+                public void windowDeiconified(WindowEvent e) {
 
-            }
+                }
 
-            @Override
-            public void windowActivated(WindowEvent e) {
+                @Override
+                public void windowActivated(WindowEvent e) {
 
-            }
+                }
 
-            @Override
-            public void windowDeactivated(WindowEvent e) {
+                @Override
+                public void windowDeactivated(WindowEvent e) {
 
-            }
-        });
+                }
+            });
+        } else {
+            gui_student.Student_Management_Frame(user, flag);
+        }
     }
 
-    public void View_Frame(Student stu, String user, Login login) {
+    public void View_Frame(String user, String flag) {
+        gui_student.Student_View_Frame(user, flag);
     }
 }
