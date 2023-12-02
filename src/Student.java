@@ -8,26 +8,30 @@ public class Student {
     static final String user = "root";
     static final String password = "zyn20030527";
 
-    public String add_student(String stu_no, String stu_name, String stu_faculties, List stu) { // 添加学生
+    public String add_student(String stu_no, String stu_name, String stu_faculties, List optional_course) { // 添加学生
         if (stu_no.isEmpty() || stu_name.isEmpty()) {
             return "empty";
         }
         try {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
-            String insert = "insert student set no = ?, name = ?, faculties = ?";
-            PreparedStatement ps_insert_1 = conn.prepareStatement(insert);
-            ps_insert_1.setString(1, stu_no);
-            ps_insert_1.setString(2, stu_name);
-            ps_insert_1.setString(3, stu_faculties);
-            ps_insert_1.executeUpdate();
-            for (Object o : stu) {
-                insert = "INSERT INTO optional_course (no, student_no, course_no) SELECT MAX(no) + 1, ?, (SELECT course_no FROM course WHERE course_name = ? ) FROM optional_course";
-                PreparedStatement ps_insert_2 = conn.prepareStatement(insert);
-                ps_insert_2.setString(1, stu_no);
-                ps_insert_2.setObject(2, o);
-                ps_insert_2.executeUpdate();
+            String insert_stu = "insert student set no = ?, name = ?, faculties = ?";
+            PreparedStatement ps_insert_stu = conn.prepareStatement(insert_stu);
+            ps_insert_stu.setString(1, stu_no);
+            ps_insert_stu.setString(2, stu_name);
+            ps_insert_stu.setString(3, stu_faculties);
+            ps_insert_stu.executeUpdate();
+            for (Object o : optional_course) {
+                String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) SELECT MAX(no) + 1, ?, (SELECT course_no FROM course WHERE course_name = ? ) FROM optional_course";
+                PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
+                ps_insert_optional_course.setString(1, stu_no);
+                ps_insert_optional_course.setObject(2, o);
+                ps_insert_optional_course.executeUpdate();
             }
+            String insert_login = "insert login set username=?,userpassword='123456'";
+            PreparedStatement ps_insert_login = conn.prepareStatement(insert_login);
+            ps_insert_login.setString(1, stu_no);
+            ps_insert_login.executeUpdate();
             count();
             return "normal";
         } catch (SQLException | ClassNotFoundException e) {
