@@ -16,7 +16,7 @@ public class Gui_Student {
     static final Gui gui = new Gui();
     static final Student stu = new Student();
 
-    public void Student_Add_Frame(String user, String flag) {
+    public void Student_Add_Frame(String user, String permissions) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(400, 400);
@@ -127,14 +127,13 @@ public class Gui_Student {
                 String flag = stu.add_student(stu_no, stu_name, stu_faculties, selectedValues);
                 if (flag.equals("normal")) {
                     JOptionPane.showMessageDialog(frame, "添加成功!");
-                    gui.Main_Frame(user, flag);
+                    frame.dispose();
+                    gui.Main_Frame(user, permissions);
                 } else {
                     if (flag.equals("error"))
                         JOptionPane.showMessageDialog(frame, "添加失败!请检查数据");
-
                     if (flag.equals("empty"))
                         JOptionPane.showMessageDialog(frame, "添加失败!数据输入不完整");
-                    Student_Add_Frame(user, flag);
                 }
             }
         });
@@ -160,7 +159,7 @@ public class Gui_Student {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(user, flag);
+                gui.Main_Frame(user, permissions);
             }
 
             @Override
@@ -190,15 +189,15 @@ public class Gui_Student {
         });
     }
 
-    public void Student_Management_Frame(String user, String flag) {
+    public void Student_Management_Frame(String user, String permissions) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
-        if (flag.equals("normal_root"))
+        if (permissions.equals("normal_root"))
             frame.setSize(700, 700);
         else
             frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-        if (flag.equals("normal_root")) {
+        if (permissions.equals("normal_root")) {
             // 创建表格模型
             String[] columnNames = {"学号", "姓名", "院系", "选课数量"};
             JTable table = new JTable() {
@@ -599,7 +598,7 @@ public class Gui_Student {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(user, flag);
+                gui.Main_Frame(user, permissions);
             }
 
             @Override
@@ -629,7 +628,7 @@ public class Gui_Student {
         });
     }
 
-    public void Student_View_Frame(String user, String flag) {
+    public void Student_View_Frame(String user, String permissions) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(700, 700);
@@ -688,7 +687,7 @@ public class Gui_Student {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(user, flag);
+                gui.Main_Frame(user, permissions);
             }
 
             public void windowClosed(WindowEvent e) {

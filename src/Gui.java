@@ -34,17 +34,17 @@ public class Gui {
             public void actionPerformed(ActionEvent e) {
                 String frame_name = accountTextField.getText();
                 String frame_password = String.valueOf(passwordField.getPassword());
-                String flag = login.password_verify(frame_name, frame_password);
-                switch (flag) {
+                String permissions = login.password_verify(frame_name, frame_password);
+                switch (permissions) {
                     case "normal_root" -> {
                         JOptionPane.showMessageDialog(frame, "登录成功，欢迎管理员" + frame_name + "登录系统");
                         frame.dispose();
-                        Main_Frame(frame_name, flag);
+                        Main_Frame(frame_name, permissions);
                     }
                     case "normal_user" -> {
                         JOptionPane.showMessageDialog(frame, "登录成功，欢迎用户" + frame_name + "登录系统");
                         frame.dispose();
-                        Main_Frame(frame_name, flag);
+                        Main_Frame(frame_name, permissions);
                     }
                     case "empty" -> JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
                     case "error" -> JOptionPane.showMessageDialog(frame, "用户名或密码错误");
@@ -122,7 +122,7 @@ public class Gui {
 
     }
 
-    public void Main_Frame(String user, String flag) {
+    public void Main_Frame(String user, String permissions) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(500, 600);
@@ -132,7 +132,7 @@ public class Gui {
 
         // 创建面板
         JPanel panel;
-        if (flag.equals("normal_root")) {
+        if (permissions.equals("normal_root")) {
             panel = new JPanel(new GridLayout(7, 1));
         } else {
             panel = new JPanel(new GridLayout(6, 1));
@@ -145,7 +145,7 @@ public class Gui {
         titleLabel.setForeground(Color.WHITE);
 
         JLabel userLabel;
-        if (flag.equals("normal_root")) {
+        if (permissions.equals("normal_root")) {
             userLabel = new JLabel("登录管理员:" + user, SwingConstants.CENTER);
         } else {
             userLabel = new JLabel("登录用户:" + user, SwingConstants.CENTER);
@@ -164,7 +164,7 @@ public class Gui {
         JButton managementButton;
         JButton viewButton = new JButton("查看信息");
 
-        if (flag.equals("normal_root")) {
+        if (permissions.equals("normal_root")) {
             managementButton = new JButton("管理信息");
         } else {
             managementButton = new JButton("管理个人信息");
@@ -199,21 +199,21 @@ public class Gui {
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Add_Frame(user, flag);
+                Add_Frame(user, permissions);
             }
         });
 
         managementButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Management_Frame(user, flag);
+                Management_Frame(user, permissions);
             }
         });
 
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                View_Frame(user, flag);
+                View_Frame(user, permissions);
             }
         });
 
@@ -283,7 +283,7 @@ public class Gui {
         // 将组件添加到面板中
         panel.add(titleLabel);
         panel.add(userLabel);
-        if (flag.equals("normal_root")) {
+        if (permissions.equals("normal_root")) {
             panel.add(addButton);
         }
         panel.add(managementButton);
@@ -298,7 +298,7 @@ public class Gui {
         frame.setVisible(true);
     }
 
-    public void Add_Frame(String user, String flag) {
+    public void Add_Frame(String user, String permissions) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(300, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -342,7 +342,7 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                gui_student.Student_Add_Frame(user, flag);
+                gui_student.Student_Add_Frame(user, permissions);
             }
         });
 
@@ -396,8 +396,8 @@ public class Gui {
         });
     }
 
-    public void Management_Frame(String user, String flag) {
-        if (flag.equals("normal_root")) {
+    public void Management_Frame(String user, String permissions) {
+        if (permissions.equals("normal_root")) {
             JFrame frame = new JFrame("学生宿舍信息管理系统");
             frame.setSize(300, 400);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -441,8 +441,7 @@ public class Gui {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose();
-                    Gui_Student gui_student = new Gui_Student();
-                    gui_student.Student_Management_Frame(user, flag);
+                    gui_student.Student_Management_Frame(user, permissions);
                 }
             });
 
@@ -495,11 +494,11 @@ public class Gui {
                 }
             });
         } else {
-            gui_student.Student_Management_Frame(user, flag);
+            gui_student.Student_Management_Frame(user, permissions);
         }
     }
 
-    public void View_Frame(String user, String flag) {
-        gui_student.Student_View_Frame(user, flag);
+    public void View_Frame(String user, String permissions) {
+        gui_student.Student_View_Frame(user, permissions);
     }
 }
