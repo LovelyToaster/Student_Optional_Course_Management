@@ -54,9 +54,29 @@ public class Login {
         }
     }
 
-    public int password_mod(String user, String password, String restart_password) {
-
-        return 0;
+    public String password_mod(String stu_user, String stu_password, String stu_restart_password) {
+        if (stu_password.isEmpty() || stu_restart_password.isEmpty())
+            return "empty";
+        try {
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(DB_URL, user, password);
+            String confirm_sql = "select userpassword from login where username=?";
+            PreparedStatement confirm_ps = conn.prepareStatement(confirm_sql);
+            confirm_ps.setString(1, stu_user);
+            ResultSet confirm_rs = confirm_ps.executeQuery();
+            confirm_rs.next();
+            if (confirm_rs.getString(1).equals(stu_password)) {
+                String change_sql = "update login set userpassword=? where username=?";
+                PreparedStatement change_ps = conn.prepareStatement(change_sql);
+                change_ps.setString(1, stu_restart_password);
+                change_ps.setString(2, stu_user);
+                change_ps.executeUpdate();
+                return "normal";
+            } else
+                return "password_error";
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

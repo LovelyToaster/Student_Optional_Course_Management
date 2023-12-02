@@ -245,10 +245,11 @@ public class Gui {
                     public void actionPerformed(ActionEvent e) {
                         String password = String.valueOf(password_frame.getPassword());
                         String restart_password = String.valueOf(restart_password_frame.getPassword());
-                        int i = login.password_mod(user, password, restart_password);
-                        if (i == 0) {
+                        String flag = login.password_mod(user, password, restart_password);
+                        if (flag.equals("normal")) {
                             JOptionPane.showMessageDialog(frame, "密码修改成功!");
-                        } else if (i == 1) {
+                            stu_dialog.dispose();
+                        } else if (flag.equals("empty")) {
                             JOptionPane.showMessageDialog(frame, "请输入完整信息!");
                         } else {
                             JOptionPane.showMessageDialog(frame, "当前密码输入错误,请重新输入!");
