@@ -137,10 +137,14 @@ public class Student {
         try {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
-            String sql = "delete from student where no = ? ";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, student_no);
-            ps.executeUpdate();
+            String stu_sql = "delete from student where no = ? ";
+            String login_sql = "delete from login where username = ?";
+            PreparedStatement ps_stu = conn.prepareStatement(stu_sql);
+            PreparedStatement ps_login = conn.prepareStatement(login_sql);
+            ps_stu.setString(1, student_no);
+            ps_login.setString(1, student_no);
+            ps_stu.executeUpdate();
+            ps_login.executeUpdate();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
