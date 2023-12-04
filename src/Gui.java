@@ -499,6 +499,109 @@ public class Gui {
     }
 
     public void View_Frame(String user, String permissions) {
-        gui_student.Student_View_Frame(user, permissions);
+        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        frame.setSize(300, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        if (permissions.equals("normal_root"))
+            panel.setLayout(new GridLayout(4, 1));
+        else
+            panel.setLayout(new GridLayout(3, 1));
+        panel.setBackground(new Color(135, 206, 235));
+
+        // 创建按钮
+        JButton TeacherButton = new JButton("查看教师信息");
+        TeacherButton.setBackground(new Color(70, 130, 180));
+        TeacherButton.setFont(new Font("宋体", Font.BOLD, 20));
+        TeacherButton.setForeground(Color.WHITE);
+        TeacherButton.setFocusPainted(false);
+        TeacherButton.setBorderPainted(false);
+
+        JButton StudentButton = new JButton("查看学生信息");
+        StudentButton.setBackground(new Color(70, 130, 180));
+        StudentButton.setFont(new Font("宋体", Font.BOLD, 20));
+        StudentButton.setForeground(Color.WHITE);
+        StudentButton.setFocusPainted(false);
+        StudentButton.setBorderPainted(false);
+
+        JButton CourseButton = new JButton("查看选课信息");
+        CourseButton.setBackground(new Color(70, 130, 180));
+        CourseButton.setFont(new Font("宋体", Font.BOLD, 20));
+        CourseButton.setForeground(Color.WHITE);
+        CourseButton.setFocusPainted(false);
+        CourseButton.setBorderPainted(false);
+
+        JButton ScoreButton;
+        if (permissions.equals("normal_root")) {
+            ScoreButton = new JButton("查看成绩信息");
+        } else {
+            ScoreButton = new JButton("查看个人成绩");
+        }
+        ScoreButton.setBackground(new Color(70, 130, 180));
+        ScoreButton.setFont(new Font("宋体", Font.BOLD, 20));
+        ScoreButton.setForeground(Color.WHITE);
+        ScoreButton.setFocusPainted(false);
+        ScoreButton.setBorderPainted(false);
+
+        StudentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                gui_student.Student_View_Frame(user, permissions);
+            }
+        });
+
+        // 将组件添加到面板中
+        panel.add(TeacherButton);
+        if (permissions.equals("normal_root"))
+            panel.add(StudentButton);
+        panel.add(CourseButton);
+        panel.add(ScoreButton);
+
+        // 将面板添加到主窗口中
+        frame.add(panel, BorderLayout.CENTER);
+
+        // 显示主窗口
+        frame.setVisible(true);
+
+        frame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }
 }
