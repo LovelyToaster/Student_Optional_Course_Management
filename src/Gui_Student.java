@@ -667,9 +667,91 @@ public class Gui_Student {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(table);
 
+        //创建按钮
+        JButton viewButton = new JButton("详细");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(viewButton);
+
+        viewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    JDialog stu_dialog = new JDialog();
+                    JButton confirmButton = new JButton("确认");
+                    stu_dialog.setSize(400, 300);
+                    stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    stu_dialog.setLocationRelativeTo(null);
+                    stu_dialog.setTitle("详细信息");
+
+                    JTextField stu_no = new JTextField((String) table.getValueAt(selectedRow, 0), 80);
+                    JTextField stu_name = new JTextField((String) table.getValueAt(selectedRow, 1), 80);
+                    JTextField stu_faculties = new JTextField((String) table.getValueAt(selectedRow, 2), 80);
+
+                    stu_no.setEditable(false);
+                    stu_name.setEditable(false);
+                    stu_faculties.setEditable(false);
+
+                    String[] columnNames = {"课程名", "任课教师"};
+                    JTable table = new JTable() {
+                        public boolean isCellEditable(int row, int column) {
+                            return false;
+                        }
+                    };
+                    DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
+                    stu_view.setColumnIdentifiers(columnNames);
+                    table.getTableHeader().setReorderingAllowed(false);
+                    ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
+                    try {
+                        while (rs.next()) {
+                            stu_view.addRow(stu.get_student(rs, "management"));
+                        }
+                    } catch (SQLException s) {
+                        throw new RuntimeException(s);
+                    }
+                    JScrollPane optional_course_ScrollPane = new JScrollPane();
+                    optional_course_ScrollPane.setViewportView(table);
+
+                    JPanel panel = new JPanel(new GridLayout(4, 2));
+                    JPanel optional_course_ScrollPane_panel = new JPanel(new GridLayout(1, 1));
+                    JPanel CENTER_panel = new JPanel(new GridLayout(2, 1));
+                    panel.add(new JLabel("学号"));
+                    panel.add(stu_no);
+                    panel.add(new JLabel("姓名"));
+                    panel.add(stu_name);
+                    panel.add(new JLabel("院系"));
+                    panel.add(stu_faculties);
+                    panel.add(new JLabel("选课情况"));
+                    optional_course_ScrollPane_panel.add(optional_course_ScrollPane);
+
+                    confirmButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            stu_dialog.dispose();
+                        }
+                    });
+                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                    buttonPanel.add(confirmButton);
+
+                    CENTER_panel.add(panel);
+                    CENTER_panel.add(optional_course_ScrollPane_panel);
+                    stu_dialog.getContentPane().setLayout(new BorderLayout());
+                    stu_dialog.getContentPane().add(CENTER_panel, BorderLayout.CENTER);
+                    stu_dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+                    stu_dialog.setModal(true);
+                    stu_dialog.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "请选择要查看的学生!");
+                }
+
+            }
+        });
+
         // 将组件添加到面板中
         panel.add(titleLabel, BorderLayout.PAGE_START);
         panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
 
         // 将面板添加到主窗口中
         frame.add(panel, BorderLayout.CENTER);
