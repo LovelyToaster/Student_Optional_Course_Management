@@ -64,39 +64,25 @@ public class Gui_Student {
         }
 
         //创建复选框
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-        JComboBox<String> comboBox = new JComboBox<>(comboBoxModel);
-
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        ArrayList<String> items = new ArrayList<>();
+        String[] columnNames = {"课程名", "任课教师"};
+        JTable table = new JTable() {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
+        stu_view.setColumnIdentifiers(columnNames);
+        table.getTableHeader().setReorderingAllowed(false);
         ResultSet rs = stu.search_student("course", "null");
         try {
             while (rs.next()) {
-                items.add(rs.getString(1));
+                stu_view.addRow(stu.get_student(rs, "add"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for (String str : items) {
-            listModel.addElement(str);
-        }
-        JList<String> list = new JList<>(listModel);
-        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        JScrollPane scrollPane = new JScrollPane(list);
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    JList<String> source = (JList<String>) e.getSource();
-                    Object[] selectedValues = source.getSelectedValues();
-                    comboBoxModel.removeAllElements();
-                    for (Object value : selectedValues) {
-                        comboBoxModel.addElement((String) value);
-                    }
-                }
-            }
-        });
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(table);
 
         // 组件添加到面板
         inputPanel.add(noLabel);
@@ -120,11 +106,17 @@ public class Gui_Student {
         // 添加按钮点击事件监听器
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                List selectedValues = list.getSelectedValuesList();
+                int[] rows = table.getSelectedRows();
+                ArrayList<String> optional_course = new ArrayList<>();
+                ArrayList<String> course_teacher = new ArrayList<>();
+                for (int row : rows) {
+                    optional_course.add(table.getValueAt(row, 0).toString());
+                    course_teacher.add(table.getValueAt(row, 1).toString());
+                }
                 String stu_no = noTextField.getText();
                 String stu_name = nameTextField.getText();
                 String stu_faculties = (String) facultiesComboBox.getSelectedItem();
-                String flag = stu.add_student(stu_no, stu_name, stu_faculties, selectedValues);
+                String flag = stu.add_student(stu_no, stu_name, stu_faculties, optional_course, course_teacher);
                 if (flag.equals("normal")) {
                     JOptionPane.showMessageDialog(frame, "添加成功!");
                     frame.dispose();
@@ -211,7 +203,7 @@ public class Gui_Student {
             ResultSet rs = stu.view_student();
             try {
                 while (rs.next()) {
-                    stu_view.addRow(stu.get_student(rs));
+                    stu_view.addRow(stu.get_student(rs, "view"));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -246,24 +238,25 @@ public class Gui_Student {
                         stu_name.setEditable(false);
                         stu_faculties.setEditable(false);
 
-                        DefaultListModel<String> optional_course_listModel = new DefaultListModel<>();
-                        ArrayList<String> items = new ArrayList<>();
+                        String[] columnNames = {"课程名", "任课教师"};
+                        JTable table = new JTable() {
+                            public boolean isCellEditable(int row, int column) {
+                                return false;
+                            }
+                        };
+                        DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
+                        stu_view.setColumnIdentifiers(columnNames);
+                        table.getTableHeader().setReorderingAllowed(false);
                         ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
                         try {
-                            if (rs.next()) {
-                                do {
-                                    items.add(rs.getString(1));
-                                } while (rs.next());
-                            } else
-                                items.add("没有选课记录");
+                            while (rs.next()) {
+                                stu_view.addRow(stu.get_student(rs, "management"));
+                            }
                         } catch (SQLException s) {
                             throw new RuntimeException(s);
                         }
-                        for (String str : items) {
-                            optional_course_listModel.addElement(str);
-                        }
-                        JList<String> optional_course_list = new JList<>(optional_course_listModel);
-                        JScrollPane optional_course_ScrollPane = new JScrollPane(optional_course_list);
+                        JScrollPane optional_course_ScrollPane = new JScrollPane();
+                        optional_course_ScrollPane.setViewportView(table);
 
                         JPanel panel = new JPanel(new GridLayout(4, 2));
                         JPanel optional_course_ScrollPane_panel = new JPanel(new GridLayout(1, 1));
@@ -394,7 +387,7 @@ public class Gui_Student {
                                 if (Student_info.next()) {
                                     stu_view.setRowCount(0);
                                     do {
-                                        stu_view.addRow(stu.get_student(Student_info));
+                                        stu_view.addRow(stu.get_student(Student_info, "view"));
                                     } while (Student_info.next());
                                 } else {
                                     JOptionPane.showMessageDialog(frame, "没有查询到信息!");
@@ -413,7 +406,7 @@ public class Gui_Student {
                                 if (Student_info.next()) {
                                     stu_view.setRowCount(0);
                                     do {
-                                        stu_view.addRow(stu.get_student(Student_info));
+                                        stu_view.addRow(stu.get_student(Student_info, "view"));
                                     } while (Student_info.next());
                                 } else {
                                     JOptionPane.showMessageDialog(frame, "没有查询到信息!");
@@ -444,7 +437,7 @@ public class Gui_Student {
                                     ResultSet Student_info = stu.search_student("faculties", student_faculties);
                                     stu_view.setRowCount(0);
                                     while (Student_info.next()) {
-                                        stu_view.addRow(stu.get_student(Student_info));
+                                        stu_view.addRow(stu.get_student(Student_info, "view"));
                                     }
                                 } catch (SQLException s) {
                                     throw new RuntimeException(s);
@@ -475,7 +468,7 @@ public class Gui_Student {
                                     ResultSet Student_info = stu.search_student("optional_course", student_optional_course);
                                     stu_view.setRowCount(0);
                                     while (Student_info.next()) {
-                                        stu_view.addRow(stu.get_student(Student_info));
+                                        stu_view.addRow(stu.get_student(Student_info, "view"));
                                     }
                                 } catch (SQLException s) {
                                     throw new RuntimeException(s);
@@ -494,7 +487,7 @@ public class Gui_Student {
                     ResultSet rs = stu.view_student();
                     try {
                         while (rs.next()) {
-                            stu_view.addRow(stu.get_student(rs));
+                            stu_view.addRow(stu.get_student(rs, "view"));
                         }
                     } catch (SQLException s) {
                         throw new RuntimeException(s);
@@ -547,23 +540,28 @@ public class Gui_Student {
             nameTextField.setEditable(false);
             facultiesTextField.setEditable(false);
 
-            DefaultListModel<String> optional_course_listModel = new DefaultListModel<>();
-            ArrayList<String> items = new ArrayList<>();
+            String[] columnNames = {"课程名", "任课教师"};
+            JTable table = new JTable() {
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
+            stu_view.setColumnIdentifiers(columnNames);
+            table.getTableHeader().setReorderingAllowed(false);
             rs = stu.search_student("optional_course_sno", user);
             try {
                 if (rs.next()) {
                     do {
-                        items.add(rs.getString(1));
+                        stu_view.addRow(stu.get_student(rs, "management"));
                     } while (rs.next());
                 } else
-                    items.add("没有选课记录");
+                    stu_view.addRow(stu.get_student(rs, "null"));
             } catch (SQLException s) {
                 throw new RuntimeException(s);
             }
-            for (String str : items) {
-                optional_course_listModel.addElement(str);
-            }
-            JList<String> optional_course_list = new JList<>(optional_course_listModel);
+            JScrollPane optional_course_list = new JScrollPane();
+            optional_course_list.setViewportView(table);
 
             JButton optional_course_button = new JButton("修改");
 
@@ -649,7 +647,7 @@ public class Gui_Student {
         ResultSet rs = stu.view_student();
         try {
             while (rs.next()) {
-                stu_view.addRow(stu.get_student(rs));
+                stu_view.addRow(stu.get_student(rs, "view"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

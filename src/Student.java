@@ -1,5 +1,6 @@
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
@@ -8,7 +9,7 @@ public class Student {
     static final String user = "root";
     static final String password = "zyn20030527";
 
-    public String add_student(String stu_no, String stu_name, String stu_faculties, List optional_course) { // 添加学生
+    public String add_student(String stu_no, String stu_name, String stu_faculties, ArrayList<String> optional_course, ArrayList<String> course_teacher) { // 添加学生
         if (stu_no.isEmpty() || stu_name.isEmpty()) {
             return "empty";
         }
@@ -21,11 +22,12 @@ public class Student {
             ps_insert_stu.setString(2, stu_name);
             ps_insert_stu.setString(3, stu_faculties);
             ps_insert_stu.executeUpdate();
-            for (Object o : optional_course) {
-                String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) SELECT MAX(no) + 1, ?, (SELECT course_no FROM course WHERE course_name = ? ) FROM optional_course";
+            for (int i = 0; i < optional_course.size(); i++) {
+                String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) SELECT MAX(no) + 1, ?, (SELECT course_no FROM course WHERE course_name = ? and course_teacher = ?) FROM optional_course";
                 PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
                 ps_insert_optional_course.setString(1, stu_no);
-                ps_insert_optional_course.setObject(2, o);
+                ps_insert_optional_course.setString(2, optional_course.get(i));
+                ps_insert_optional_course.setString(3, course_teacher.get(i));
                 ps_insert_optional_course.executeUpdate();
             }
             String insert_login = "insert login set username=?,userpassword='123456'";
@@ -59,9 +61,15 @@ public class Student {
         }
     }
 
-    public Object[] get_student(ResultSet rs) { // 获取学生信息
+    public Object[] get_student(ResultSet rs, String type) { // 获取学生信息
         try {
-            return new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};
+            if (type.equals("view"))
+                return new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};
+            if (type.equals("add") || type.equals("management"))
+                return new Object[]{rs.getString(1), rs.getString(2)};
+            if (type.equals("null"))
+                return new Object[]{"无选课记录"};
+            return new Object[0];
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -89,10 +97,10 @@ public class Student {
                     sql = "select * from student where no = (select student_no from optional_course where course_no = (select course_no from course where course_name = ?))";
             }
             if (type.equals("optional_course_sno")) {
-                sql = "select course_name from course where course_no in (select course_no from optional_course where student_no = ?)";
+                sql = "select course_name,course_teacher from course where course_no in (select course_no from optional_course where student_no = ?)";
             }
             if (type.equals("course")) {
-                sql = "select course_name from course";
+                sql = "select course_name,course_teacher from course";
             }
             PreparedStatement ps = conn.prepareStatement(sql);
             if (type.equals("name"))
