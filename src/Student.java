@@ -99,6 +99,8 @@ public class Student {
             if (type.equals("optional_course_sno")) {
                 sql = "select course_name,course_teacher from course where course_no in (select course_no from optional_course where student_no = ?)";
             }
+            if (type.equals("optional_course_sno_not"))
+                sql = "select course_name,course_teacher from course where course_no not in (select course_no from optional_course where student_no = ?)";
             if (type.equals("course")) {
                 sql = "select course_name,course_teacher from course";
             }
@@ -113,33 +115,54 @@ public class Student {
         }
     }
 
-    public int modify_student(String s_no, String s_name, String s_faculties, String s_optional_course) { // 修改学生信息
+    public String modify_student(String s_no, String s_name, String s_faculties, ArrayList<String> optional_course, ArrayList<String> course_teacher, String type) { // 修改学生信息
         try {
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(DB_URL, user, password);
-            String optional_course = "select optional_course_quantity from student where no = ? and optional_course_quantity = ?";
-            PreparedStatement optional_course_ps = conn.prepareStatement(optional_course);
-            optional_course_ps.setString(1, s_no);
-            optional_course_ps.setString(2, s_optional_course);
-            ResultSet rs = optional_course_ps.executeQuery();
-            while (rs.next()) {
-                if (!rs.getString(1).equals(s_optional_course))
-                    return 1;
+            if (type.equals("add")) {
+                for (int i = 0; i < optional_course.size(); i++) {
+                    String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) SELECT MAX(no) + 1, ?, (SELECT course_no FROM course WHERE course_name = ? and course_teacher = ?) FROM optional_course";
+                    PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
+                    ps_insert_optional_course.setString(1, s_no);
+                    ps_insert_optional_course.setString(2, optional_course.get(i));
+                    ps_insert_optional_course.setString(3, course_teacher.get(i));
+                    ps_insert_optional_course.executeUpdate();
+                }
+                return "normal";
+            } else if (type.equals("delete")) {
+                for (int i = 0; i < optional_course.size(); i++) {
+                    String insert_optional_course = "delete from optional_course where student_no=? and course_no=(select course_no from course where course_name=?)";
+                    PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
+                    ps_insert_optional_course.setString(1, s_no);
+                    ps_insert_optional_course.setString(2, optional_course.get(i));
+                    ps_insert_optional_course.executeUpdate();
+                    return "normal";
+                }
+            } else {
+                String optional_course_sql = "select optional_course_quantity from student where no = ? and optional_course_quantity = ?";
+                PreparedStatement optional_course_ps = conn.prepareStatement(optional_course_sql);
+                optional_course_ps.setString(1, s_no);
+//                optional_course_ps.setString(2, s_optional_course);
+                ResultSet rs = optional_course_ps.executeQuery();
+                while (rs.next()) {
+//                    if (!rs.getString(1).equals(s_optional_course))
+                    return "1";
+                }
+                String sql = "update student set name = ? , faculties = ? , optional_course_quantity = ? where no = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setString(1, s_name);
+                ps.setString(2, s_faculties);
+//                ps.setString(3, s_optional_course);
+                ps.setString(4, s_no);
+                ps.executeUpdate();
+                return "normal";
             }
-
-            String sql = "update student set name = ? , faculties = ? , optional_course_quantity = ? where no = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, s_name);
-            ps.setString(2, s_faculties);
-            ps.setString(3, s_optional_course);
-            ps.setString(4, s_no);
-            ps.executeUpdate();
-            return 0;
+            return "error";
         } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
+            return "error";
         }
-
-    } //修改学生信息
+    }
 
     public void delete_student(String student_no) { // 删除学生信息
         try {
