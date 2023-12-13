@@ -328,7 +328,7 @@ public class Gui {
         // 显示主窗口
         frame.setVisible(true);
 
-        addWindowListener("gui", frame, user, permissions);
+        addWindowListener(frame, user, permissions);
     }
 
     public void Management_Frame(String user, String permissions) {
@@ -388,7 +388,7 @@ public class Gui {
             // 显示主窗口
             frame.setVisible(true);
 
-            addWindowListener("gui", frame, user, permissions);
+            addWindowListener(frame, user, permissions);
         } else {
             gui_student.Student_Management_Frame(user, permissions);
         }
@@ -459,10 +459,10 @@ public class Gui {
         // 显示主窗口
         frame.setVisible(true);
 
-        addWindowListener("gui", frame, user, permissions);
+        addWindowListener(frame, user, permissions);
     }
 
-    public void addWindowListener(String type, JFrame frame, String user, String permissions) {
+    public void addWindowListener(JFrame frame, String user, String permissions) {
         frame.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -471,8 +471,7 @@ public class Gui {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                if (type.equals("gui"))
-                    Main_Frame(user, permissions);
+                Main_Frame(user, permissions);
             }
 
             @Override

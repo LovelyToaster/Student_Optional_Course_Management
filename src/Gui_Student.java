@@ -3,8 +3,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -140,42 +138,8 @@ public class Gui_Student {
 
         // 显示主窗口
         frame.setVisible(true);
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
 
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(user, permissions);
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
+        gui.addWindowListener(frame, user, permissions);
     }
 
     public void Student_Management_Frame(String user, String permissions) {
@@ -214,82 +178,7 @@ public class Gui_Student {
             JButton modButton = new JButton("修改");
             JButton searchButton = new JButton("查询");
             JButton refreshButton = new JButton("刷新");
-            JButton viewButton = new JButton("详细");
-            viewButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int selectedRow = table.getSelectedRow();
-                    if (selectedRow != -1) {
-                        JDialog stu_dialog = new JDialog();
-                        JButton confirmButton = new JButton("确认");
-                        stu_dialog.setSize(400, 300);
-                        stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                        stu_dialog.setLocationRelativeTo(null);
-                        stu_dialog.setTitle("详细信息");
-
-                        JTextField stu_no = new JTextField((String) table.getValueAt(selectedRow, 0), 80);
-                        JTextField stu_name = new JTextField((String) table.getValueAt(selectedRow, 1), 80);
-                        JTextField stu_faculties = new JTextField((String) table.getValueAt(selectedRow, 2), 80);
-
-                        stu_no.setEditable(false);
-                        stu_name.setEditable(false);
-                        stu_faculties.setEditable(false);
-
-                        String[] columnNames = {"课程名", "任课教师"};
-                        JTable table = new JTable() {
-                            public boolean isCellEditable(int row, int column) {
-                                return false;
-                            }
-                        };
-                        DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
-                        stu_view.setColumnIdentifiers(columnNames);
-                        table.getTableHeader().setReorderingAllowed(false);
-                        ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
-                        try {
-                            while (rs.next()) {
-                                stu_view.addRow(stu.get_student(rs, "management"));
-                            }
-                        } catch (SQLException s) {
-                            throw new RuntimeException(s);
-                        }
-                        JScrollPane optional_course_ScrollPane = new JScrollPane();
-                        optional_course_ScrollPane.setViewportView(table);
-
-                        JPanel panel = new JPanel(new GridLayout(4, 2));
-                        JPanel optional_course_ScrollPane_panel = new JPanel(new GridLayout(1, 1));
-                        JPanel CENTER_panel = new JPanel(new GridLayout(2, 1));
-                        panel.add(new JLabel("学号"));
-                        panel.add(stu_no);
-                        panel.add(new JLabel("姓名"));
-                        panel.add(stu_name);
-                        panel.add(new JLabel("院系"));
-                        panel.add(stu_faculties);
-                        panel.add(new JLabel("选课情况"));
-                        optional_course_ScrollPane_panel.add(optional_course_ScrollPane);
-
-                        confirmButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                stu_dialog.dispose();
-                            }
-                        });
-                        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-                        buttonPanel.add(confirmButton);
-
-                        CENTER_panel.add(panel);
-                        CENTER_panel.add(optional_course_ScrollPane_panel);
-                        stu_dialog.getContentPane().setLayout(new BorderLayout());
-                        stu_dialog.getContentPane().add(CENTER_panel, BorderLayout.CENTER);
-                        stu_dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-
-                        stu_dialog.setModal(true);
-                        stu_dialog.setVisible(true);
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "请选择要查看的学生!");
-                    }
-
-                }
-            });
+            JButton viewButton = getViewButton(table, frame);
             deleteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -581,7 +470,6 @@ public class Gui_Student {
                         }
                     }
                     if (info != null && info.equals(option[1])) {
-                        int i = 0;
                         String student_name = JOptionPane.showInputDialog(frame, "请输入姓名", "输入", JOptionPane.QUESTION_MESSAGE);
                         if (student_name != null) {
                             ResultSet Student_info = stu.search_student("name", student_name);
@@ -601,7 +489,6 @@ public class Gui_Student {
                     }
                     if (info != null && info.equals(option[2])) {
                         int i = 0;
-                        int j = 0;
                         ArrayList<String> option_array = new ArrayList<>();
                         ResultSet rs = stu.search_student("faculties", "null");
                         try {
@@ -632,7 +519,6 @@ public class Gui_Student {
                     }
                     if (info != null && info.equals(option[3])) {
                         int i = 0;
-                        int j = 0;
                         ArrayList<String> option_array = new ArrayList<>();
                         ResultSet rs = stu.search_student("optional_course", "null");
                         try {
@@ -711,8 +597,8 @@ public class Gui_Student {
             JLabel optional_courseLabel = new JLabel("选课信息：");
 
             JTextField noTextField = new JTextField(user);
-            JTextField nameTextField = null;
-            JTextField facultiesTextField = null;
+            JTextField nameTextField;
+            JTextField facultiesTextField;
             try {
                 nameTextField = new JTextField(rs.getString(2));
                 facultiesTextField = new JTextField(rs.getString(3));
@@ -746,168 +632,7 @@ public class Gui_Student {
             JScrollPane optional_course_list = new JScrollPane();
             optional_course_list.setViewportView(table);
 
-            JButton optional_course_button = new JButton("修改");
-
-
-            optional_course_button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JDialog stu_dialog = new JDialog();
-                    stu_dialog.setSize(400, 400);
-                    stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                    stu_dialog.setLocationRelativeTo(null);
-                    stu_dialog.setTitle("选课信息修改");
-
-                    String[] columnNames = {"课程名", "任课教师"};
-                    JTable table = new JTable() {
-                        public boolean isCellEditable(int row, int column) {
-                            return false;
-                        }
-                    };
-                    DefaultTableModel stu_view_oc = (DefaultTableModel) table.getModel();
-                    stu_view_oc.setColumnIdentifiers(columnNames);
-                    table.getTableHeader().setReorderingAllowed(false);
-                    ResultSet rs = stu.search_student("optional_course_sno", user);
-                    try {
-                        if (rs.next()) {
-                            do {
-                                stu_view_oc.addRow(stu.get_student(rs, "management"));
-                            } while (rs.next());
-                        } else
-                            stu_view_oc.addRow(stu.get_student(rs, "null"));
-                    } catch (SQLException s) {
-                        throw new RuntimeException(s);
-                    }
-
-                    JButton addButton = new JButton("增加");
-                    JButton deleteButton = new JButton("删除");
-                    JButton confirmButton = new JButton("确认");
-
-                    String flag = null;
-                    addButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            JDialog add = new JDialog();
-                            add.setSize(400, 400);
-                            add.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                            add.setLocationRelativeTo(null);
-                            add.setTitle("请选择要添加的课程");
-
-                            JButton confirmButton = new JButton("确定");
-
-                            String[] columnNames = {"课程名", "任课教师"};
-                            JTable table = new JTable() {
-                                public boolean isCellEditable(int row, int column) {
-                                    return false;
-                                }
-                            };
-                            DefaultTableModel stu_view_add = (DefaultTableModel) table.getModel();
-                            stu_view_add.setColumnIdentifiers(columnNames);
-                            table.getTableHeader().setReorderingAllowed(false);
-                            ResultSet rs = stu.search_student("optional_course_sno_not", user);
-                            try {
-                                if (rs.next()) {
-                                    do {
-                                        stu_view_add.addRow(stu.get_student(rs, "management"));
-                                    } while (rs.next());
-                                } else
-                                    stu_view_add.addRow(stu.get_student(rs, "null"));
-                            } catch (SQLException s) {
-                                throw new RuntimeException(s);
-                            }
-                            JScrollPane optional_course_list = new JScrollPane();
-                            optional_course_list.setViewportView(table);
-
-                            confirmButton.addActionListener(new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    int[] rows = table.getSelectedRows();
-                                    ArrayList<String> optional_course = new ArrayList<>();
-                                    ArrayList<String> course_teacher = new ArrayList<>();
-                                    for (int row : rows) {
-                                        optional_course.add(table.getValueAt(row, 0).toString());
-                                        course_teacher.add(table.getValueAt(row, 1).toString());
-                                    }
-                                    String flag = stu.modify_student(user, "null", "null", optional_course, course_teacher, "add");
-                                    if (flag.equals("normal")) {
-                                        JOptionPane.showMessageDialog(add, "添加成功!");
-                                        stu_view.setRowCount(0);
-                                        stu_view_oc.setRowCount(0);
-                                        ResultSet rs = stu.search_student("optional_course_sno", user);
-                                        try {
-                                            if (rs.next()) {
-                                                do {
-                                                    stu_view.addRow(stu.get_student(rs, "management"));
-                                                    stu_view_oc.addRow(stu.get_student(rs, "management"));
-                                                } while (rs.next());
-                                            } else {
-                                                stu_view.addRow(stu.get_student(rs, "null"));
-                                                stu_view_oc.addRow(stu.get_student(rs, "null"));
-                                            }
-                                        } catch (SQLException s) {
-                                            throw new RuntimeException(s);
-                                        }
-                                        add.dispose();
-                                    }
-
-                                }
-                            });
-
-                            JPanel button = new JPanel();
-                            button.add(confirmButton);
-
-                            add.getContentPane().setLayout(new BorderLayout());
-                            add.add(optional_course_list, BorderLayout.CENTER);
-                            add.add(button, BorderLayout.SOUTH);
-
-                            add.setModal(true);
-                            add.setVisible(true);
-                        }
-                    });
-
-                    deleteButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            int[] rows = table.getSelectedRows();
-                            ArrayList<String> optional_course = new ArrayList<>();
-                            for (int row : rows) {
-                                optional_course.add(table.getValueAt(row, 0).toString());
-                                stu_view.removeRow(row);
-                                stu_view_oc.removeRow(row);
-                            }
-                            String flag = stu.modify_student(user, "null", "null", optional_course, null, "delete");
-                            if (flag.equals("normal"))
-                                JOptionPane.showMessageDialog(stu_dialog, "删除成功!");
-                        }
-                    });
-
-                    confirmButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            stu_dialog.dispose();
-                        }
-                    });
-
-                    JScrollPane optional_course_list = new JScrollPane();
-                    optional_course_list.setViewportView(table);
-                    JPanel button1 = new JPanel();
-                    button1.add(addButton);
-                    button1.add(deleteButton);
-
-                    JPanel button2 = new JPanel();
-                    button2.add(confirmButton);
-
-                    JPanel all_button = new JPanel(new GridLayout(2, 1));
-                    all_button.add(button1);
-                    all_button.add(button2);
-
-                    stu_dialog.getContentPane().setLayout(new BorderLayout());
-                    stu_dialog.add(optional_course_list, BorderLayout.CENTER);
-                    stu_dialog.add(all_button, BorderLayout.SOUTH);
-                    stu_dialog.setModal(true);
-                    stu_dialog.setVisible(true);
-                }
-            });
+            JButton optional_course_button = getOptionalCourseButton(user, stu_view);
 
             management.add(noLabel);
             management.add(noTextField);
@@ -932,42 +657,7 @@ public class Gui_Student {
         }
         frame.setVisible(true);
 
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(user, permissions);
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
+        gui.addWindowListener(frame, user, permissions);
     }
 
     public void Student_View_Frame(String user, String permissions) {
@@ -1012,10 +702,26 @@ public class Gui_Student {
         scrollPane.setViewportView(table);
 
         //创建按钮
-        JButton viewButton = new JButton("详细");
+        JButton viewButton = getViewButton(table, frame);
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(viewButton);
 
+        // 将组件添加到面板中
+        panel.add(titleLabel, BorderLayout.PAGE_START);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // 将面板添加到主窗口中
+        frame.add(panel, BorderLayout.CENTER);
+
+        // 显示主窗口
+        frame.setVisible(true);
+
+        gui.addWindowListener(frame, user, permissions);
+    }
+
+    public JButton getViewButton(JTable table, JFrame frame) {
+        JButton viewButton = new JButton("详细");
         viewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1091,53 +797,170 @@ public class Gui_Student {
 
             }
         });
+        return viewButton;
+    }
 
-        // 将组件添加到面板中
-        panel.add(titleLabel, BorderLayout.PAGE_START);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
+    public JButton getOptionalCourseButton(String user, DefaultTableModel stu_view) {
+        JButton optional_course_button = new JButton("修改");
 
-        // 将面板添加到主窗口中
-        frame.add(panel, BorderLayout.CENTER);
-
-        // 显示主窗口
-        frame.setVisible(true);
-
-        frame.addWindowListener(new WindowListener() {
+        optional_course_button.addActionListener(new ActionListener() {
             @Override
-            public void windowOpened(WindowEvent e) {
+            public void actionPerformed(ActionEvent e) {
+                JDialog stu_dialog = new JDialog();
+                stu_dialog.setSize(400, 400);
+                stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                stu_dialog.setLocationRelativeTo(null);
+                stu_dialog.setTitle("选课信息修改");
 
+                String[] columnNames = {"课程名", "任课教师"};
+                JTable table = new JTable() {
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                DefaultTableModel stu_view_oc = (DefaultTableModel) table.getModel();
+                stu_view_oc.setColumnIdentifiers(columnNames);
+                table.getTableHeader().setReorderingAllowed(false);
+                ResultSet rs = stu.search_student("optional_course_sno", user);
+                try {
+                    if (rs.next()) {
+                        do {
+                            stu_view_oc.addRow(stu.get_student(rs, "management"));
+                        } while (rs.next());
+                    } else
+                        stu_view_oc.addRow(stu.get_student(rs, "null"));
+                } catch (SQLException s) {
+                    throw new RuntimeException(s);
+                }
+
+                JButton addButton = new JButton("增加");
+                JButton deleteButton = new JButton("删除");
+                JButton confirmButton = new JButton("确认");
+
+                addButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JDialog add = new JDialog();
+                        add.setSize(400, 400);
+                        add.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                        add.setLocationRelativeTo(null);
+                        add.setTitle("请选择要添加的课程");
+
+                        JButton confirmButton = new JButton("确定");
+
+                        String[] columnNames = {"课程名", "任课教师"};
+                        JTable table = new JTable() {
+                            public boolean isCellEditable(int row, int column) {
+                                return false;
+                            }
+                        };
+                        DefaultTableModel stu_view_add = (DefaultTableModel) table.getModel();
+                        stu_view_add.setColumnIdentifiers(columnNames);
+                        table.getTableHeader().setReorderingAllowed(false);
+                        ResultSet rs = stu.search_student("optional_course_sno_not", user);
+                        try {
+                            if (rs.next()) {
+                                do {
+                                    stu_view_add.addRow(stu.get_student(rs, "management"));
+                                } while (rs.next());
+                            } else
+                                stu_view_add.addRow(stu.get_student(rs, "null"));
+                        } catch (SQLException s) {
+                            throw new RuntimeException(s);
+                        }
+                        JScrollPane optional_course_list = new JScrollPane();
+                        optional_course_list.setViewportView(table);
+
+                        confirmButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                int[] rows = table.getSelectedRows();
+                                ArrayList<String> optional_course = new ArrayList<>();
+                                ArrayList<String> course_teacher = new ArrayList<>();
+                                for (int row : rows) {
+                                    optional_course.add(table.getValueAt(row, 0).toString());
+                                    course_teacher.add(table.getValueAt(row, 1).toString());
+                                }
+                                String flag = stu.modify_student(user, "null", "null", optional_course, course_teacher, "add");
+                                if (flag.equals("normal")) {
+                                    JOptionPane.showMessageDialog(add, "添加成功!");
+                                    stu_view.setRowCount(0);
+                                    stu_view_oc.setRowCount(0);
+                                    ResultSet rs = stu.search_student("optional_course_sno", user);
+                                    try {
+                                        if (rs.next()) {
+                                            do {
+                                                stu_view.addRow(stu.get_student(rs, "management"));
+                                                stu_view_oc.addRow(stu.get_student(rs, "management"));
+                                            } while (rs.next());
+                                        } else {
+                                            stu_view.addRow(stu.get_student(rs, "null"));
+                                            stu_view_oc.addRow(stu.get_student(rs, "null"));
+                                        }
+                                    } catch (SQLException s) {
+                                        throw new RuntimeException(s);
+                                    }
+                                    add.dispose();
+                                }
+
+                            }
+                        });
+
+                        JPanel button = new JPanel();
+                        button.add(confirmButton);
+
+                        add.getContentPane().setLayout(new BorderLayout());
+                        add.add(optional_course_list, BorderLayout.CENTER);
+                        add.add(button, BorderLayout.SOUTH);
+
+                        add.setModal(true);
+                        add.setVisible(true);
+                    }
+                });
+
+                deleteButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int[] rows = table.getSelectedRows();
+                        ArrayList<String> optional_course = new ArrayList<>();
+                        for (int row : rows) {
+                            optional_course.add(table.getValueAt(row, 0).toString());
+                            stu_view.removeRow(row);
+                            stu_view_oc.removeRow(row);
+                        }
+                        String flag = stu.modify_student(user, "null", "null", optional_course, null, "delete");
+                        if (flag.equals("normal"))
+                            JOptionPane.showMessageDialog(stu_dialog, "删除成功!");
+                    }
+                });
+
+                confirmButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        stu_dialog.dispose();
+                    }
+                });
+
+                JScrollPane optional_course_list = new JScrollPane();
+                optional_course_list.setViewportView(table);
+                JPanel button1 = new JPanel();
+                button1.add(addButton);
+                button1.add(deleteButton);
+
+                JPanel button2 = new JPanel();
+                button2.add(confirmButton);
+
+                JPanel all_button = new JPanel(new GridLayout(2, 1));
+                all_button.add(button1);
+                all_button.add(button2);
+
+                stu_dialog.getContentPane().setLayout(new BorderLayout());
+                stu_dialog.add(optional_course_list, BorderLayout.CENTER);
+                stu_dialog.add(all_button, BorderLayout.SOUTH);
+                stu_dialog.setModal(true);
+                stu_dialog.setVisible(true);
             }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                gui.Main_Frame(user, permissions);
-            }
-
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-
         });
+        return optional_course_button;
     }
 }

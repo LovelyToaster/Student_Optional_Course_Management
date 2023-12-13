@@ -129,14 +129,14 @@ public class Student {
                 }
                 return "normal";
             } else if (type.equals("delete")) {
-                for (int i = 0; i < optional_course.size(); i++) {
+                for (String s : optional_course) {
                     String insert_optional_course = "delete from optional_course where student_no=? and course_no=(select course_no from course where course_name=?)";
                     PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
                     ps_insert_optional_course.setString(1, s_no);
-                    ps_insert_optional_course.setString(2, optional_course.get(i));
+                    ps_insert_optional_course.setString(2, s);
                     ps_insert_optional_course.executeUpdate();
-                    return "normal";
                 }
+                return "normal";
             } else {
                 String sql = "update student set name = ? , faculties = ? where no = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
@@ -146,7 +146,6 @@ public class Student {
                 ps.executeUpdate();
                 return "normal";
             }
-            return "error";
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e.getMessage());
             return "error";

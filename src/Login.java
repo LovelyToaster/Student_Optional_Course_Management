@@ -1,6 +1,5 @@
 
 import java.sql.*;
-import java.util.HashMap;
 
 
 public class Login {
@@ -8,7 +7,6 @@ public class Login {
     static final String DB_URL = "jdbc:mysql://localhost:3306/student_optional_course_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     static final String user = "root";
     static final String password = "zyn20030527";
-    HashMap<String, String> login_map = new HashMap<>(); // 保存用户账号密码
 
     public String password_verify(String frame_name, String frame_password) { // 账号密码验证
         try {
