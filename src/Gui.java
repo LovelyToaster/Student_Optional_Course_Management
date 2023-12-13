@@ -275,7 +275,6 @@ public class Gui {
     public void Add_Frame(String user, String permissions) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(300, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
 
@@ -328,13 +327,14 @@ public class Gui {
 
         // 显示主窗口
         frame.setVisible(true);
+
+        addWindowListener("gui", frame, user, permissions);
     }
 
     public void Management_Frame(String user, String permissions) {
         if (permissions.equals("normal_root")) {
             JFrame frame = new JFrame("学生宿舍信息管理系统");
             frame.setSize(300, 400);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLayout(new BorderLayout());
             frame.setLocationRelativeTo(null);
 
@@ -388,6 +388,7 @@ public class Gui {
             // 显示主窗口
             frame.setVisible(true);
 
+            addWindowListener("gui", frame, user, permissions);
         } else {
             gui_student.Student_Management_Frame(user, permissions);
         }
@@ -396,7 +397,6 @@ public class Gui {
     public void View_Frame(String user, String permissions) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(300, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
 
@@ -459,6 +459,7 @@ public class Gui {
         // 显示主窗口
         frame.setVisible(true);
 
+        addWindowListener("gui", frame, user, permissions);
     }
 
     public void addWindowListener(String type, JFrame frame, String user, String permissions) {
@@ -470,7 +471,7 @@ public class Gui {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                if (type.equals("add"))
+                if (type.equals("gui"))
                     Main_Frame(user, permissions);
             }
 
