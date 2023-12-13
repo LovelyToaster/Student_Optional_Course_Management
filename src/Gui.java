@@ -1,8 +1,6 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
@@ -30,50 +28,41 @@ public class Gui {
 
         // 登录按钮
         JButton loginButton = new JButton("登录");
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String frame_name = accountTextField.getText();
-                String frame_password = String.valueOf(passwordField.getPassword());
-                String permissions = login.password_verify(frame_name, frame_password);
-                switch (permissions) {
-                    case "normal_root" -> {
-                        JOptionPane.showMessageDialog(frame, "登录成功，欢迎管理员" + frame_name + "登录系统");
-                        frame.dispose();
-                        Main_Frame(frame_name, permissions);
-                    }
-                    case "normal_user" -> {
-                        JOptionPane.showMessageDialog(frame, "登录成功，欢迎用户" + frame_name + "登录系统");
-                        frame.dispose();
-                        Main_Frame(frame_name, permissions);
-                    }
-                    case "empty" -> JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
-                    case "error" -> JOptionPane.showMessageDialog(frame, "用户名或密码错误");
+        loginButton.addActionListener(e -> {
+            String frame_name = accountTextField.getText();
+            String frame_password = String.valueOf(passwordField.getPassword());
+            String permissions = login.password_verify(frame_name, frame_password);
+            switch (permissions) {
+                case "normal_root" -> {
+                    JOptionPane.showMessageDialog(frame, "登录成功，欢迎管理员" + frame_name + "登录系统");
+                    frame.dispose();
+                    Main_Frame(frame_name, permissions);
                 }
+                case "normal_user" -> {
+                    JOptionPane.showMessageDialog(frame, "登录成功，欢迎用户" + frame_name + "登录系统");
+                    frame.dispose();
+                    Main_Frame(frame_name, permissions);
+                }
+                case "empty" -> JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
+                case "error" -> JOptionPane.showMessageDialog(frame, "用户名或密码错误");
             }
         });
         // 注册按钮
         JButton registerButton = new JButton("注册");
-        registerButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String frame_new_name = accountTextField.getText();
-                String frame_new_password = String.valueOf(passwordField.getPassword());
-                int i = login.user_register(frame_new_name, frame_new_password);
-                if (i == 0) {
-                    JOptionPane.showMessageDialog(frame, "注册成功");
-                } else if (i == -2) {
-                    JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
-                } else if (i == -1) {
-                    JOptionPane.showMessageDialog(frame, "用户名重复");
-                }
+        registerButton.addActionListener(e -> {
+            String frame_new_name = accountTextField.getText();
+            String frame_new_password = String.valueOf(passwordField.getPassword());
+            int i = login.user_register(frame_new_name, frame_new_password);
+            if (i == 0) {
+                JOptionPane.showMessageDialog(frame, "注册成功");
+            } else if (i == -2) {
+                JOptionPane.showMessageDialog(frame, "请输入用户名或密码");
+            } else if (i == -1) {
+                JOptionPane.showMessageDialog(frame, "用户名重复");
             }
         });
         JButton restartButton = new JButton("重置密码");
-        restartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, "请联系管理员修改密码");
-            }
-        });
+        restartButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "请联系管理员修改密码"));
 
         // 将组件添加到面板中
         GridBagConstraints constraints = new GridBagConstraints();
@@ -196,87 +185,72 @@ public class Gui {
         exitButton.setBorderPainted(false);
 
         // 添加按钮点击事件监听器
-        addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                Add_Frame(user, permissions);
-            }
+        addButton.addActionListener(e -> {
+            frame.dispose();
+            Add_Frame(user, permissions);
         });
 
-        managementButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                Management_Frame(user, permissions);
-            }
+        managementButton.addActionListener(e -> {
+            frame.dispose();
+            Management_Frame(user, permissions);
         });
 
-        viewButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                View_Frame(user, permissions);
-            }
+        viewButton.addActionListener(e -> {
+            frame.dispose();
+            View_Frame(user, permissions);
         });
 
-        passwordmodButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JDialog stu_dialog = new JDialog();
-                JButton confirmButton = new JButton("确认");
-                stu_dialog.setSize(400, 300);
-                stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                stu_dialog.setLocationRelativeTo(null);
-                stu_dialog.setTitle("请输入信息");
+        passwordmodButton.addActionListener(e -> {
+            JDialog stu_dialog = new JDialog();
+            JButton confirmButton = new JButton("确认");
+            stu_dialog.setSize(400, 300);
+            stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            stu_dialog.setLocationRelativeTo(null);
+            stu_dialog.setTitle("请输入信息");
 
-                JTextField user_frame = new JTextField(user, 80);
-                user_frame.setEditable(false);
-                JPasswordField password_frame = new JPasswordField(80);
-                JPasswordField restart_password_frame = new JPasswordField(80);
+            JTextField user_frame = new JTextField(user, 80);
+            user_frame.setEditable(false);
+            JPasswordField password_frame = new JPasswordField(80);
+            JPasswordField restart_password_frame = new JPasswordField(80);
 
-                JPanel panel = new JPanel(new GridLayout(5, 2));
-                panel.add(new JLabel("当前登录用户"));
-                panel.add(user_frame);
-                panel.add(new JLabel("当前密码"));
-                panel.add(password_frame);
-                panel.add(new JLabel("新的密码"));
-                panel.add(restart_password_frame);
+            JPanel panel1 = new JPanel(new GridLayout(5, 2));
+            panel1.add(new JLabel("当前登录用户"));
+            panel1.add(user_frame);
+            panel1.add(new JLabel("当前密码"));
+            panel1.add(password_frame);
+            panel1.add(new JLabel("新的密码"));
+            panel1.add(restart_password_frame);
 
-                confirmButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String password = String.valueOf(password_frame.getPassword());
-                        String restart_password = String.valueOf(restart_password_frame.getPassword());
-                        String flag = login.password_mod(user, password, restart_password);
-                        if (flag.equals("normal")) {
-                            JOptionPane.showMessageDialog(frame, "密码修改成功!");
-                            stu_dialog.dispose();
-                        } else if (flag.equals("empty")) {
-                            JOptionPane.showMessageDialog(frame, "请输入完整信息!");
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "当前密码输入错误,请重新输入!");
-                        }
-                    }
-                });
-
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-                buttonPanel.add(confirmButton);
-
-                stu_dialog.getContentPane().setLayout(new BorderLayout());
-                stu_dialog.getContentPane().add(panel, BorderLayout.CENTER);
-                stu_dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-
-                stu_dialog.setModal(true);
-                stu_dialog.setVisible(true);
-            }
-        });
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                try {
-                    Login_Frame();
-                } catch (IOException | ClassNotFoundException ex) {
-                    throw new RuntimeException(ex);
+            confirmButton.addActionListener(e1 -> {
+                String password = String.valueOf(password_frame.getPassword());
+                String restart_password = String.valueOf(restart_password_frame.getPassword());
+                String flag = login.password_mod(user, password, restart_password);
+                if (flag.equals("normal")) {
+                    JOptionPane.showMessageDialog(frame, "密码修改成功!");
+                    stu_dialog.dispose();
+                } else if (flag.equals("empty")) {
+                    JOptionPane.showMessageDialog(frame, "请输入完整信息!");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "当前密码输入错误,请重新输入!");
                 }
+            });
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            buttonPanel.add(confirmButton);
+
+            stu_dialog.getContentPane().setLayout(new BorderLayout());
+            stu_dialog.getContentPane().add(panel1, BorderLayout.CENTER);
+            stu_dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+            stu_dialog.setModal(true);
+            stu_dialog.setVisible(true);
+        });
+        exitButton.addActionListener(e -> {
+            frame.dispose();
+            try {
+                Login_Frame();
+            } catch (IOException | ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -338,12 +312,9 @@ public class Gui {
         ScoreButton.setFocusPainted(false);
         ScoreButton.setBorderPainted(false);
 
-        StudentButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                gui_student.Student_Add_Frame(user, permissions);
-            }
+        StudentButton.addActionListener(e -> {
+            frame.dispose();
+            gui_student.Student_Add_Frame(user, permissions);
         });
 
         // 将组件添加到面板中
@@ -357,43 +328,6 @@ public class Gui {
 
         // 显示主窗口
         frame.setVisible(true);
-
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
     }
 
     public void Management_Frame(String user, String permissions) {
@@ -437,12 +371,9 @@ public class Gui {
             ScoreButton.setFocusPainted(false);
             ScoreButton.setBorderPainted(false);
 
-            StudentButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    frame.dispose();
-                    gui_student.Student_Management_Frame(user, permissions);
-                }
+            StudentButton.addActionListener(e -> {
+                frame.dispose();
+                gui_student.Student_Management_Frame(user, permissions);
             });
 
             // 将组件添加到面板中
@@ -457,42 +388,6 @@ public class Gui {
             // 显示主窗口
             frame.setVisible(true);
 
-            frame.addWindowListener(new WindowListener() {
-                @Override
-                public void windowOpened(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowClosing(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowClosed(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowIconified(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowDeiconified(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowActivated(WindowEvent e) {
-
-                }
-
-                @Override
-                public void windowDeactivated(WindowEvent e) {
-
-                }
-            });
         } else {
             gui_student.Student_Management_Frame(user, permissions);
         }
@@ -546,12 +441,9 @@ public class Gui {
         ScoreButton.setFocusPainted(false);
         ScoreButton.setBorderPainted(false);
 
-        StudentButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                gui_student.Student_View_Frame(user, permissions);
-            }
+        StudentButton.addActionListener(e -> {
+            frame.dispose();
+            gui_student.Student_View_Frame(user, permissions);
         });
 
         // 将组件添加到面板中
@@ -567,6 +459,9 @@ public class Gui {
         // 显示主窗口
         frame.setVisible(true);
 
+    }
+
+    public void addWindowListener(String type, JFrame frame, String user, String permissions) {
         frame.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -575,7 +470,8 @@ public class Gui {
 
             @Override
             public void windowClosing(WindowEvent e) {
-
+                if (type.equals("add"))
+                    Main_Frame(user, permissions);
             }
 
             @Override

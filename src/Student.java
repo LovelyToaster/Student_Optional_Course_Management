@@ -1,7 +1,6 @@
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Student {
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
