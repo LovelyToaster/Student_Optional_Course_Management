@@ -139,21 +139,11 @@ public class Student {
                     return "normal";
                 }
             } else {
-                String optional_course_sql = "select optional_course_quantity from student where no = ? and optional_course_quantity = ?";
-                PreparedStatement optional_course_ps = conn.prepareStatement(optional_course_sql);
-                optional_course_ps.setString(1, s_no);
-//                optional_course_ps.setString(2, s_optional_course);
-                ResultSet rs = optional_course_ps.executeQuery();
-                while (rs.next()) {
-//                    if (!rs.getString(1).equals(s_optional_course))
-                    return "1";
-                }
-                String sql = "update student set name = ? , faculties = ? , optional_course_quantity = ? where no = ?";
+                String sql = "update student set name = ? , faculties = ? where no = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, s_name);
                 ps.setString(2, s_faculties);
-//                ps.setString(3, s_optional_course);
-                ps.setString(4, s_no);
+                ps.setString(3, s_no);
                 ps.executeUpdate();
                 return "normal";
             }
