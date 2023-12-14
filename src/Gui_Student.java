@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class Gui_Student {
     static final Gui gui = new Gui();
     static final Student stu = new Student();
 
-    public void Student_Add_Frame(String user, String permissions) {
+    public void Student_Add_Frame(Connection conn, String user, String permissions) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(400, 400);
@@ -49,7 +50,7 @@ public class Gui_Student {
 
         //添加院系单选框
         JComboBox<String> facultiesComboBox = new JComboBox<>();
-        ResultSet rs_faculties = stu.search_student("faculties", "null");
+        ResultSet rs_faculties = stu.search_student(conn, "faculties", "null");
         try {
             while (rs_faculties.next()) {
                 facultiesComboBox.addItem(rs_faculties.getString(1));
@@ -68,7 +69,7 @@ public class Gui_Student {
         DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
         stu_view.setColumnIdentifiers(columnNames);
         table.getTableHeader().setReorderingAllowed(false);
-        ResultSet rs = stu.search_student("course", "null");
+        ResultSet rs = stu.search_student(conn, "course", "null");
         try {
             while (rs.next()) {
                 stu_view.addRow(stu.get_student(rs, "add"));
@@ -111,11 +112,11 @@ public class Gui_Student {
                 String stu_no = noTextField.getText();
                 String stu_name = nameTextField.getText();
                 String stu_faculties = (String) facultiesComboBox.getSelectedItem();
-                String flag = stu.add_student(stu_no, stu_name, stu_faculties, optional_course, course_teacher);
+                String flag = stu.add_student(conn, stu_no, stu_name, stu_faculties, optional_course, course_teacher);
                 if (flag.equals("normal")) {
                     JOptionPane.showMessageDialog(frame, "添加成功!");
                     frame.dispose();
-                    gui.Main_Frame(user, permissions);
+                    gui.Main_Frame(conn, user, permissions);
                 } else {
                     if (flag.equals("error"))
                         JOptionPane.showMessageDialog(frame, "添加失败!请检查数据");
@@ -139,10 +140,10 @@ public class Gui_Student {
         // 显示主窗口
         frame.setVisible(true);
 
-        gui.addWindowListener(frame, user, permissions);
+        gui.addWindowListener(conn, frame, user, permissions);
     }
 
-    public void Student_Management_Frame(String user, String permissions) {
+    public void Student_Management_Frame(Connection conn, String user, String permissions) {
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         if (permissions.equals("normal_root"))
             frame.setSize(700, 700);
@@ -161,7 +162,7 @@ public class Gui_Student {
             DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
             stu_view.setColumnIdentifiers(columnNames);
             table.getTableHeader().setReorderingAllowed(false);
-            ResultSet rs = stu.view_student();
+            ResultSet rs = stu.view_student(conn);
             try {
                 while (rs.next()) {
                     stu_view.addRow(stu.get_student(rs, "view"));
@@ -178,7 +179,7 @@ public class Gui_Student {
             JButton modButton = new JButton("修改");
             JButton searchButton = new JButton("查询");
             JButton refreshButton = new JButton("刷新");
-            JButton viewButton = getViewButton(table, frame);
+            JButton viewButton = getViewButton(conn, table, frame);
             deleteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -190,7 +191,7 @@ public class Gui_Student {
                         int i = JOptionPane.showConfirmDialog(frame, "你确定要删除该信息吗？", "注意", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                         if (i == JOptionPane.YES_OPTION) {
                             // 执行删除学生宿舍操作的代码
-                            stu.delete_student(student_no);
+                            stu.delete_student(conn, student_no);
                             // 从表格模型中删除选中行
                             stu_view.removeRow(selectedRow);
                             JOptionPane.showMessageDialog(frame, "删除成功!");
@@ -228,7 +229,7 @@ public class Gui_Student {
                         DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
                         stu_view.setColumnIdentifiers(columnNames);
                         table.getTableHeader().setReorderingAllowed(false);
-                        ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
+                        ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
                         try {
                             if (rs.next()) {
                                 do {
@@ -269,7 +270,7 @@ public class Gui_Student {
                                 DefaultTableModel stu_view_oc = (DefaultTableModel) table.getModel();
                                 stu_view_oc.setColumnIdentifiers(columnNames);
                                 table.getTableHeader().setReorderingAllowed(false);
-                                ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
+                                ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
                                 try {
                                     if (rs.next()) {
                                         do {
@@ -305,7 +306,7 @@ public class Gui_Student {
                                         DefaultTableModel stu_view_add = (DefaultTableModel) table.getModel();
                                         stu_view_add.setColumnIdentifiers(columnNames);
                                         table.getTableHeader().setReorderingAllowed(false);
-                                        ResultSet rs = stu.search_student("optional_course_sno_not", stu_no.getText());
+                                        ResultSet rs = stu.search_student(conn, "optional_course_sno_not", stu_no.getText());
                                         try {
                                             if (rs.next()) {
                                                 do {
@@ -329,12 +330,12 @@ public class Gui_Student {
                                                     optional_course.add(table.getValueAt(row, 0).toString());
                                                     course_teacher.add(table.getValueAt(row, 1).toString());
                                                 }
-                                                String flag = stu.modify_student(stu_no.getText(), "null", "null", optional_course, course_teacher, "add");
+                                                String flag = stu.modify_student(conn, stu_no.getText(), "null", "null", optional_course, course_teacher, "add");
                                                 if (flag.equals("normal")) {
                                                     JOptionPane.showMessageDialog(add, "添加成功!");
                                                     stu_view.setRowCount(0);
                                                     stu_view_oc.setRowCount(0);
-                                                    ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
+                                                    ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
                                                     try {
                                                         if (rs.next()) {
                                                             do {
@@ -376,7 +377,7 @@ public class Gui_Student {
                                             stu_view.removeRow(row);
                                             stu_view_oc.removeRow(row);
                                         }
-                                        String flag = stu.modify_student(user, "null", "null", optional_course, null, "delete");
+                                        String flag = stu.modify_student(conn, user, "null", "null", optional_course, null, "delete");
                                         if (flag.equals("normal"))
                                             JOptionPane.showMessageDialog(stu_dialog, "删除成功!");
                                     }
@@ -417,7 +418,7 @@ public class Gui_Student {
                                 String s_faculties = stu_faculties.getText();
                                 ArrayList<String> optional_course = new ArrayList<>();
                                 ArrayList<String> course_teacher = new ArrayList<>();
-                                String flag = stu.modify_student(s_no, s_name, s_faculties, optional_course, course_teacher, "null");
+                                String flag = stu.modify_student(conn, s_no, s_name, s_faculties, optional_course, course_teacher, "null");
                                 if (flag.equals("1")) {
                                     JOptionPane.showMessageDialog(frame, "修改失败,重复选课!");
                                 } else {
@@ -454,7 +455,7 @@ public class Gui_Student {
                     if (info != null && info.equals(option[0])) {
                         String student_no = JOptionPane.showInputDialog(frame, "请输入学号", "输入", JOptionPane.QUESTION_MESSAGE);
                         if (student_no != null) {
-                            ResultSet Student_info = stu.search_student("no", student_no);
+                            ResultSet Student_info = stu.search_student(conn, "no", student_no);
                             try {
                                 if (Student_info.next()) {
                                     stu_view.setRowCount(0);
@@ -472,7 +473,7 @@ public class Gui_Student {
                     if (info != null && info.equals(option[1])) {
                         String student_name = JOptionPane.showInputDialog(frame, "请输入姓名", "输入", JOptionPane.QUESTION_MESSAGE);
                         if (student_name != null) {
-                            ResultSet Student_info = stu.search_student("name", student_name);
+                            ResultSet Student_info = stu.search_student(conn, "name", student_name);
                             try {
                                 if (Student_info.next()) {
                                     stu_view.setRowCount(0);
@@ -490,7 +491,7 @@ public class Gui_Student {
                     if (info != null && info.equals(option[2])) {
                         int i = 0;
                         ArrayList<String> option_array = new ArrayList<>();
-                        ResultSet rs = stu.search_student("faculties", "null");
+                        ResultSet rs = stu.search_student(conn, "faculties", "null");
                         try {
                             while (rs.next()) {
                                 i = 1;
@@ -504,7 +505,7 @@ public class Gui_Student {
                             String student_faculties = (String) JOptionPane.showInputDialog(frame, "请选择院系", "提示", JOptionPane.QUESTION_MESSAGE, null, option_faculties, option_faculties[0]);
                             if (student_faculties != null) {
                                 try {
-                                    ResultSet Student_info = stu.search_student("faculties", student_faculties);
+                                    ResultSet Student_info = stu.search_student(conn, "faculties", student_faculties);
                                     stu_view.setRowCount(0);
                                     while (Student_info.next()) {
                                         stu_view.addRow(stu.get_student(Student_info, "view"));
@@ -520,7 +521,7 @@ public class Gui_Student {
                     if (info != null && info.equals(option[3])) {
                         int i = 0;
                         ArrayList<String> option_array = new ArrayList<>();
-                        ResultSet rs = stu.search_student("optional_course", "null");
+                        ResultSet rs = stu.search_student(conn, "optional_course", "null");
                         try {
                             while (rs.next()) {
                                 i = 1;
@@ -534,7 +535,7 @@ public class Gui_Student {
                             String student_optional_course = (String) JOptionPane.showInputDialog(frame, "请选择课程", "提示", JOptionPane.QUESTION_MESSAGE, null, option_optional_course, option_optional_course[0]);
                             if (student_optional_course != null) {
                                 try {
-                                    ResultSet Student_info = stu.search_student("optional_course", student_optional_course);
+                                    ResultSet Student_info = stu.search_student(conn, "optional_course", student_optional_course);
                                     stu_view.setRowCount(0);
                                     while (Student_info.next()) {
                                         stu_view.addRow(stu.get_student(Student_info, "view"));
@@ -553,7 +554,7 @@ public class Gui_Student {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     stu_view.setRowCount(0);
-                    ResultSet rs = stu.view_student();
+                    ResultSet rs = stu.view_student(conn);
                     try {
                         while (rs.next()) {
                             stu_view.addRow(stu.get_student(rs, "view"));
@@ -573,7 +574,7 @@ public class Gui_Student {
             frame.add(scrollPane, BorderLayout.CENTER);
             frame.add(buttonPanel, BorderLayout.SOUTH);
         } else {
-            ResultSet rs = stu.search_student("no", user);
+            ResultSet rs = stu.search_student(conn, "no", user);
             try {
                 rs.next();
             } catch (SQLException e) {
@@ -618,7 +619,7 @@ public class Gui_Student {
             DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
             stu_view.setColumnIdentifiers(columnNames);
             table.getTableHeader().setReorderingAllowed(false);
-            rs = stu.search_student("optional_course_sno", user);
+            rs = stu.search_student(conn, "optional_course_sno", user);
             try {
                 if (rs.next()) {
                     do {
@@ -632,7 +633,7 @@ public class Gui_Student {
             JScrollPane optional_course_list = new JScrollPane();
             optional_course_list.setViewportView(table);
 
-            JButton optional_course_button = getOptionalCourseButton(user, stu_view);
+            JButton optional_course_button = getOptionalCourseButton(conn, user, stu_view);
 
             management.add(noLabel);
             management.add(noTextField);
@@ -657,10 +658,10 @@ public class Gui_Student {
         }
         frame.setVisible(true);
 
-        gui.addWindowListener(frame, user, permissions);
+        gui.addWindowListener(conn, frame, user, permissions);
     }
 
-    public void Student_View_Frame(String user, String permissions) {
+    public void Student_View_Frame(Connection conn, String user, String permissions) {
         // 创建主窗口
         JFrame frame = new JFrame("学生宿舍信息管理系统");
         frame.setSize(700, 700);
@@ -678,7 +679,7 @@ public class Gui_Student {
         DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
         stu_view.setColumnIdentifiers(columnNames);
         table.getTableHeader().setReorderingAllowed(false);
-        ResultSet rs = stu.view_student();
+        ResultSet rs = stu.view_student(conn);
         try {
             while (rs.next()) {
                 stu_view.addRow(stu.get_student(rs, "view"));
@@ -702,7 +703,7 @@ public class Gui_Student {
         scrollPane.setViewportView(table);
 
         //创建按钮
-        JButton viewButton = getViewButton(table, frame);
+        JButton viewButton = getViewButton(conn, table, frame);
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(viewButton);
 
@@ -717,10 +718,10 @@ public class Gui_Student {
         // 显示主窗口
         frame.setVisible(true);
 
-        gui.addWindowListener(frame, user, permissions);
+        gui.addWindowListener(conn, frame, user, permissions);
     }
 
-    public JButton getViewButton(JTable table, JFrame frame) {
+    public JButton getViewButton(Connection conn, JTable table, JFrame frame) {
         JButton viewButton = new JButton("详细");
         viewButton.addActionListener(new ActionListener() {
             @Override
@@ -751,7 +752,7 @@ public class Gui_Student {
                     DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
                     stu_view.setColumnIdentifiers(columnNames);
                     table.getTableHeader().setReorderingAllowed(false);
-                    ResultSet rs = stu.search_student("optional_course_sno", stu_no.getText());
+                    ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
                     try {
                         while (rs.next()) {
                             stu_view.addRow(stu.get_student(rs, "management"));
@@ -800,7 +801,7 @@ public class Gui_Student {
         return viewButton;
     }
 
-    public JButton getOptionalCourseButton(String user, DefaultTableModel stu_view) {
+    public JButton getOptionalCourseButton(Connection conn, String user, DefaultTableModel stu_view) {
         JButton optional_course_button = new JButton("修改");
 
         optional_course_button.addActionListener(new ActionListener() {
@@ -821,7 +822,7 @@ public class Gui_Student {
                 DefaultTableModel stu_view_oc = (DefaultTableModel) table.getModel();
                 stu_view_oc.setColumnIdentifiers(columnNames);
                 table.getTableHeader().setReorderingAllowed(false);
-                ResultSet rs = stu.search_student("optional_course_sno", user);
+                ResultSet rs = stu.search_student(conn, "optional_course_sno", user);
                 try {
                     if (rs.next()) {
                         do {
@@ -857,7 +858,7 @@ public class Gui_Student {
                         DefaultTableModel stu_view_add = (DefaultTableModel) table.getModel();
                         stu_view_add.setColumnIdentifiers(columnNames);
                         table.getTableHeader().setReorderingAllowed(false);
-                        ResultSet rs = stu.search_student("optional_course_sno_not", user);
+                        ResultSet rs = stu.search_student(conn, "optional_course_sno_not", user);
                         try {
                             if (rs.next()) {
                                 do {
@@ -881,12 +882,12 @@ public class Gui_Student {
                                     optional_course.add(table.getValueAt(row, 0).toString());
                                     course_teacher.add(table.getValueAt(row, 1).toString());
                                 }
-                                String flag = stu.modify_student(user, "null", "null", optional_course, course_teacher, "add");
+                                String flag = stu.modify_student(conn, user, "null", "null", optional_course, course_teacher, "add");
                                 if (flag.equals("normal")) {
                                     JOptionPane.showMessageDialog(add, "添加成功!");
                                     stu_view.setRowCount(0);
                                     stu_view_oc.setRowCount(0);
-                                    ResultSet rs = stu.search_student("optional_course_sno", user);
+                                    ResultSet rs = stu.search_student(conn, "optional_course_sno", user);
                                     try {
                                         if (rs.next()) {
                                             do {
@@ -928,7 +929,7 @@ public class Gui_Student {
                             stu_view.removeRow(row);
                             stu_view_oc.removeRow(row);
                         }
-                        String flag = stu.modify_student(user, "null", "null", optional_course, null, "delete");
+                        String flag = stu.modify_student(conn, user, "null", "null", optional_course, null, "delete");
                         if (flag.equals("normal"))
                             JOptionPane.showMessageDialog(stu_dialog, "删除成功!");
                     }
