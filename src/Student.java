@@ -14,14 +14,7 @@ public class Student {
             ps_insert_stu.setString(2, stu_name);
             ps_insert_stu.setString(3, stu_faculties);
             ps_insert_stu.executeUpdate();
-            for (int i = 0; i < optional_course.size(); i++) {
-                String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) SELECT MAX(no) + 1, ?, (SELECT course_no FROM course WHERE course_name = ? and course_teacher = ?) FROM optional_course";
-                PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
-                ps_insert_optional_course.setString(1, stu_no);
-                ps_insert_optional_course.setString(2, optional_course.get(i));
-                ps_insert_optional_course.setString(3, course_teacher.get(i));
-                ps_insert_optional_course.executeUpdate();
-            }
+            stu_course_add(conn, stu_no, optional_course, course_teacher);
             String insert_login = "insert login set username=?,userpassword='123456'";
             PreparedStatement ps_insert_login = conn.prepareStatement(insert_login);
             ps_insert_login.setString(1, stu_no);
@@ -106,14 +99,7 @@ public class Student {
     public String modify_student(Connection conn, String s_no, String s_name, String s_faculties, ArrayList<String> optional_course, ArrayList<String> course_teacher, String type) { // 修改学生信息
         try {
             if (type.equals("add")) {
-                for (int i = 0; i < optional_course.size(); i++) {
-                    String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) SELECT MAX(no) + 1, ?, (SELECT course_no FROM course WHERE course_name = ? and course_teacher = ?) FROM optional_course";
-                    PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
-                    ps_insert_optional_course.setString(1, s_no);
-                    ps_insert_optional_course.setString(2, optional_course.get(i));
-                    ps_insert_optional_course.setString(3, course_teacher.get(i));
-                    ps_insert_optional_course.executeUpdate();
-                }
+                stu_course_add(conn, s_no, optional_course, course_teacher);
                 return "normal";
             } else if (type.equals("delete")) {
                 for (String s : optional_course) {
@@ -162,6 +148,36 @@ public class Student {
             return ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void stu_course_add(Connection conn, String s_no, ArrayList<String> optional_course, ArrayList<String> course_teacher) {
+        try {
+            for (int i = 0; i < optional_course.size(); i++) {
+                String no_sql = "select no from optional_course order by no";
+                PreparedStatement ps_no = conn.prepareStatement(no_sql);
+                ResultSet rs_no = ps_no.executeQuery();
+                int no = 1;
+                int flag = 0;
+                while (rs_no.next()) {
+                    if (no != rs_no.getInt(1)) {
+                        flag = 1;
+                        break;
+                    }
+                    no++;
+                }
+                if (flag == 0)
+                    no = rs_no.getInt(1) + 1;
+                String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) value(?, ?, (SELECT course_no FROM course WHERE course_name = ? and course_teacher = ?))";
+                PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
+                ps_insert_optional_course.setInt(1, no);
+                ps_insert_optional_course.setString(2, s_no);
+                ps_insert_optional_course.setString(3, optional_course.get(i));
+                ps_insert_optional_course.setString(4, course_teacher.get(i));
+                ps_insert_optional_course.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
