@@ -7,6 +7,7 @@ import java.sql.Connection;
 
 public class Gui {
     static final Gui_Student gui_student = new Gui_Student();
+    static final Gui_Course gui_course = new Gui_Course();
     static final Login login = new Login();
 
     public void Login_Frame(Connection conn) {
@@ -293,7 +294,7 @@ public class Gui {
         StudentButton.setFocusPainted(false);
         StudentButton.setBorderPainted(false);
 
-        JButton CourseButton = new JButton("添加选课信息");
+        JButton CourseButton = new JButton("添加课程信息");
         CourseButton.setBackground(new Color(70, 130, 180));
         CourseButton.setFont(new Font("宋体", Font.BOLD, 20));
         CourseButton.setForeground(Color.WHITE);
@@ -311,7 +312,6 @@ public class Gui {
             frame.dispose();
             gui_student.Student_Add_Frame(conn, user, permissions);
         });
-
         // 将组件添加到面板中
         panel.add(TeacherButton);
         panel.add(StudentButton);
@@ -353,7 +353,7 @@ public class Gui {
             StudentButton.setFocusPainted(false);
             StudentButton.setBorderPainted(false);
 
-            JButton CourseButton = new JButton("管理选课信息");
+            JButton CourseButton = new JButton("管理课程信息");
             CourseButton.setBackground(new Color(70, 130, 180));
             CourseButton.setFont(new Font("宋体", Font.BOLD, 20));
             CourseButton.setForeground(Color.WHITE);
@@ -418,7 +418,7 @@ public class Gui {
         StudentButton.setFocusPainted(false);
         StudentButton.setBorderPainted(false);
 
-        JButton CourseButton = new JButton("查看选课信息");
+        JButton CourseButton = new JButton("查看课程信息");
         CourseButton.setBackground(new Color(70, 130, 180));
         CourseButton.setFont(new Font("宋体", Font.BOLD, 20));
         CourseButton.setForeground(Color.WHITE);
@@ -440,6 +440,11 @@ public class Gui {
         StudentButton.addActionListener(e -> {
             frame.dispose();
             gui_student.Student_View_Frame(conn, user, permissions);
+        });
+
+        CourseButton.addActionListener(e -> {
+            frame.dispose();
+            gui_course.Course_View_Frame(conn, user, permissions);
         });
 
         // 将组件添加到面板中
