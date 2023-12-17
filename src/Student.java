@@ -132,7 +132,7 @@ public class Student {
             if (type.equals("optional_course_no")) {
                 sql = "select course_name,course_teacher from course where course_no in (select course_no from optional_course where student_no = ?)";
             }
-            if (type.equals("optional_course_sno_not"))
+            if (type.equals("optional_course_no_not"))
                 sql = "select course_name,course_teacher from course where course_no not in (select course_no from optional_course where student_no = ?)";
             if (type.equals("course")) {
                 sql = "select course_name,course_teacher from course";

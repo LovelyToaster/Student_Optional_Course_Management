@@ -230,7 +230,7 @@ public class Gui_Student {
                         DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
                         stu_view.setColumnIdentifiers(columnNames);
                         table.getTableHeader().setReorderingAllowed(false);
-                        ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
+                        ResultSet rs = stu.search_student(conn, "optional_course_no", stu_no.getText());
                         try {
                             if (rs.next()) {
                                 do {
@@ -271,7 +271,7 @@ public class Gui_Student {
                                 DefaultTableModel stu_view_oc = (DefaultTableModel) table.getModel();
                                 stu_view_oc.setColumnIdentifiers(columnNames);
                                 table.getTableHeader().setReorderingAllowed(false);
-                                ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
+                                ResultSet rs = stu.search_student(conn, "optional_course_no", stu_no.getText());
                                 try {
                                     if (rs.next()) {
                                         do {
@@ -307,7 +307,7 @@ public class Gui_Student {
                                         DefaultTableModel stu_view_add = (DefaultTableModel) table.getModel();
                                         stu_view_add.setColumnIdentifiers(columnNames);
                                         table.getTableHeader().setReorderingAllowed(false);
-                                        ResultSet rs = stu.search_student(conn, "optional_course_sno_not", stu_no.getText());
+                                        ResultSet rs = stu.search_student(conn, "optional_course_no_not", stu_no.getText());
                                         try {
                                             if (rs.next()) {
                                                 do {
@@ -336,7 +336,7 @@ public class Gui_Student {
                                                     JOptionPane.showMessageDialog(add, "添加成功!");
                                                     stu_view.setRowCount(0);
                                                     stu_view_oc.setRowCount(0);
-                                                    ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
+                                                    ResultSet rs = stu.search_student(conn, "optional_course_no", stu_no.getText());
                                                     try {
                                                         if (rs.next()) {
                                                             do {
@@ -620,7 +620,7 @@ public class Gui_Student {
             DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
             stu_view.setColumnIdentifiers(columnNames);
             table.getTableHeader().setReorderingAllowed(false);
-            rs = stu.search_student(conn, "optional_course_sno", user);
+            rs = stu.search_student(conn, "optional_course_no", user);
             try {
                 if (rs.next()) {
                     do {
@@ -687,7 +687,7 @@ public class Gui_Student {
                 DefaultTableModel stu_view_oc = (DefaultTableModel) table.getModel();
                 stu_view_oc.setColumnIdentifiers(columnNames);
                 table.getTableHeader().setReorderingAllowed(false);
-                ResultSet rs = stu.search_student(conn, "optional_course_sno", user);
+                ResultSet rs = stu.search_student(conn, "optional_course_no", user);
                 try {
                     if (rs.next()) {
                         do {
@@ -723,7 +723,7 @@ public class Gui_Student {
                         DefaultTableModel stu_view_add = (DefaultTableModel) table.getModel();
                         stu_view_add.setColumnIdentifiers(columnNames);
                         table.getTableHeader().setReorderingAllowed(false);
-                        ResultSet rs = stu.search_student(conn, "optional_course_sno_not", user);
+                        ResultSet rs = stu.search_student(conn, "optional_course_no_not", user);
                         try {
                             if (rs.next()) {
                                 do {
@@ -752,7 +752,7 @@ public class Gui_Student {
                                     JOptionPane.showMessageDialog(add, "添加成功!");
                                     stu_view.setRowCount(0);
                                     stu_view_oc.setRowCount(0);
-                                    ResultSet rs = stu.search_student(conn, "optional_course_sno", user);
+                                    ResultSet rs = stu.search_student(conn, "optional_course_no", user);
                                     try {
                                         if (rs.next()) {
                                             do {

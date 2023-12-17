@@ -43,7 +43,11 @@ public class Gui_Method {
                 method_view = c.getMethod("search", Connection.class, String.class);
             }
             Method method_get = c.getMethod("get", ResultSet.class, String.class);
-            ResultSet rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn, "grade"});
+            ResultSet rs = null;
+            if (c.getName().equals("Grade"))
+                rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn, "grade"});
+            else
+                rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn});
             while (rs.next()) {
                 view.addRow((Object[]) method_get.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{rs, "view"}));
             }
