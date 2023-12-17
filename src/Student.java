@@ -58,6 +58,20 @@ public class Student {
         }
     }
 
+    public Object[] get(ResultSet rs, String type) { // 获取学生信息
+        try {
+            if (type.equals("view"))
+                return new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};
+            if (type.equals("add") || type.equals("management"))
+                return new Object[]{rs.getString(1), rs.getString(2)};
+            if (type.equals("null"))
+                return new Object[]{"无选课记录"};
+            return new Object[0];
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public ResultSet search_student(Connection conn, String type, String stu) { // 查找学生信息
         try {
             String sql = null;
@@ -77,7 +91,45 @@ public class Student {
                 else
                     sql = "select * from student where no = (select student_no from optional_course where course_no = (select course_no from course where course_name = ?))";
             }
-            if (type.equals("optional_course_sno")) {
+            if (type.equals("optional_course_no")) {
+                sql = "select course_name,course_teacher from course where course_no in (select course_no from optional_course where student_no = ?)";
+            }
+            if (type.equals("optional_course_sno_not"))
+                sql = "select course_name,course_teacher from course where course_no not in (select course_no from optional_course where student_no = ?)";
+            if (type.equals("course")) {
+                sql = "select course_name,course_teacher from course";
+            }
+            PreparedStatement ps = conn.prepareStatement(sql);
+            if (type.equals("name"))
+                ps.setString(1, "%" + stu + "%");
+            else if (!stu.equals("null"))
+                ps.setString(1, stu);
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResultSet search(Connection conn, String type, String stu) { // 查找学生信息
+        try {
+            String sql = null;
+            if (type.equals("no"))
+                sql = "select * from student where no = ?";
+            if (type.equals("name"))
+                sql = "select * from student where name like ?";
+            if (type.equals("faculties")) {
+                if (stu.equals("null"))
+                    sql = "select distinct faculties from faculties ";
+                else
+                    sql = "select * from student where faculties = ?";
+            }
+            if (type.equals("optional_course")) {
+                if (stu.equals("null"))
+                    sql = "select distinct course_name from course,optional_course where course.course_no=optional_course.course_no";
+                else
+                    sql = "select * from student where no = (select student_no from optional_course where course_no = (select course_no from course where course_name = ?))";
+            }
+            if (type.equals("optional_course_no")) {
                 sql = "select course_name,course_teacher from course where course_no in (select course_no from optional_course where student_no = ?)";
             }
             if (type.equals("optional_course_sno_not"))
@@ -141,6 +193,17 @@ public class Student {
     }
 
     public ResultSet view_student(Connection conn) {
+        try {
+            count(conn);
+            String sql = "select * from student_optional_course_management.student";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResultSet view(Connection conn) {
         try {
             count(conn);
             String sql = "select * from student_optional_course_management.student";

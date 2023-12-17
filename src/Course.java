@@ -34,7 +34,19 @@ public class Course {
         }
     }
 
-    public ResultSet view_course(Connection conn) {
+    public Object[] get(ResultSet rs, String type) {
+        try {
+            if (type.equals("view"))
+                return new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};
+            if (type.equals("management"))
+                return new Object[]{rs.getString(1), rs.getString(2)};
+            return new Object[0];
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResultSet view(Connection conn) {
         try {
             count(conn);
             String sql = "select * from course";
@@ -46,10 +58,10 @@ public class Course {
 
     }
 
-    public ResultSet search_course(Connection conn, String type, String course) {
+    public ResultSet search(Connection conn, String type, String course) {
         try {
             String sql = null;
-            if (type.equals("optional_course_cno")) {
+            if (type.equals("optional_course_no")) {
                 sql = "select student_no,name from optional_course,student where student_no=student.no and course_no=?";
             }
             PreparedStatement ps = conn.prepareStatement(sql);

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class Gui_Student {
     static final Gui gui = new Gui();
+    static final Gui_Method guiMethod = new Gui_Method();
     static final Student stu = new Student();
 
     public void Student_Add_Frame(Connection conn, String user, String permissions) {
@@ -179,7 +180,7 @@ public class Gui_Student {
             JButton modButton = new JButton("修改");
             JButton searchButton = new JButton("查询");
             JButton refreshButton = new JButton("刷新");
-            JButton viewButton = getViewButton(conn, table, frame);
+            //JButton viewButton = getViewButton(conn, table, frame);
             deleteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -565,7 +566,7 @@ public class Gui_Student {
                 }
             });
             JPanel buttonPanel = new JPanel();
-            buttonPanel.add(viewButton);
+            //buttonPanel.add(viewButton);
             buttonPanel.add(searchButton);
             buttonPanel.add(modButton);
             buttonPanel.add(deleteButton);
@@ -662,143 +663,7 @@ public class Gui_Student {
     }
 
     public void Student_View_Frame(Connection conn, String user, String permissions) {
-        // 创建主窗口
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
-        frame.setSize(700, 700);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        frame.setLocationRelativeTo(null);
-
-        //创建显示区域
-        String[] columnNames = {"学号", "姓名", "院系", "选课数量"};
-        JTable table = new JTable() {
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
-        stu_view.setColumnIdentifiers(columnNames);
-        table.getTableHeader().setReorderingAllowed(false);
-        ResultSet rs = stu.view_student(conn);
-        try {
-            while (rs.next()) {
-                stu_view.addRow(stu.get_student(rs, "view"));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        // 创建面板
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBackground(new Color(135, 206, 235));
-
-        // 创建标题标签
-        JLabel titleLabel = new JLabel("所有的学生宿舍信息", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
-        titleLabel.setForeground(Color.WHITE);
-
-        // 创建滚动面板
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportView(table);
-
-        //创建按钮
-        JButton viewButton = getViewButton(conn, table, frame);
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(viewButton);
-
-        // 将组件添加到面板中
-        panel.add(titleLabel, BorderLayout.PAGE_START);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
-
-        // 将面板添加到主窗口中
-        frame.add(panel, BorderLayout.CENTER);
-
-        // 显示主窗口
-        frame.setVisible(true);
-
-        gui.addWindowListener(conn, frame, user, permissions);
-    }
-
-    public JButton getViewButton(Connection conn, JTable table, JFrame frame) {
-        JButton viewButton = new JButton("详细");
-        viewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    JDialog stu_dialog = new JDialog();
-                    JButton confirmButton = new JButton("确认");
-                    stu_dialog.setSize(400, 300);
-                    stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                    stu_dialog.setLocationRelativeTo(null);
-                    stu_dialog.setTitle("详细信息");
-
-                    JTextField stu_no = new JTextField((String) table.getValueAt(selectedRow, 0), 80);
-                    JTextField stu_name = new JTextField((String) table.getValueAt(selectedRow, 1), 80);
-                    JTextField stu_faculties = new JTextField((String) table.getValueAt(selectedRow, 2), 80);
-
-                    stu_no.setEditable(false);
-                    stu_name.setEditable(false);
-                    stu_faculties.setEditable(false);
-
-                    String[] columnNames = {"课程名", "任课教师"};
-                    JTable table = new JTable() {
-                        public boolean isCellEditable(int row, int column) {
-                            return false;
-                        }
-                    };
-                    DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
-                    stu_view.setColumnIdentifiers(columnNames);
-                    table.getTableHeader().setReorderingAllowed(false);
-                    ResultSet rs = stu.search_student(conn, "optional_course_sno", stu_no.getText());
-                    try {
-                        while (rs.next()) {
-                            stu_view.addRow(stu.get_student(rs, "management"));
-                        }
-                    } catch (SQLException s) {
-                        throw new RuntimeException(s);
-                    }
-                    JScrollPane optional_course_ScrollPane = new JScrollPane();
-                    optional_course_ScrollPane.setViewportView(table);
-
-                    JPanel panel = new JPanel(new GridLayout(4, 2));
-                    JPanel optional_course_ScrollPane_panel = new JPanel(new GridLayout(1, 1));
-                    JPanel CENTER_panel = new JPanel(new GridLayout(2, 1));
-                    panel.add(new JLabel("学号"));
-                    panel.add(stu_no);
-                    panel.add(new JLabel("姓名"));
-                    panel.add(stu_name);
-                    panel.add(new JLabel("院系"));
-                    panel.add(stu_faculties);
-                    panel.add(new JLabel("选课情况"));
-                    optional_course_ScrollPane_panel.add(optional_course_ScrollPane);
-
-                    confirmButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            stu_dialog.dispose();
-                        }
-                    });
-                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-                    buttonPanel.add(confirmButton);
-
-                    CENTER_panel.add(panel);
-                    CENTER_panel.add(optional_course_ScrollPane_panel);
-                    stu_dialog.getContentPane().setLayout(new BorderLayout());
-                    stu_dialog.getContentPane().add(CENTER_panel, BorderLayout.CENTER);
-                    stu_dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-
-                    stu_dialog.setModal(true);
-                    stu_dialog.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "请选择要查看的学生!");
-                }
-
-            }
-        });
-        return viewButton;
+        guiMethod.View_Frame(conn, Student.class, user, permissions);
     }
 
     public JButton getOptionalCourseButton(Connection conn, String user, DefaultTableModel stu_view) {
