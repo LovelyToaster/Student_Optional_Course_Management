@@ -24,6 +24,8 @@ public class Gui_Method {
             columnNames = new String[]{"课程号", "课程名", "任课教师", "选课人数"};
         if (c.getName().equals("Student"))
             columnNames = new String[]{"学号", "姓名", "院系", "选课数量"};
+        if (c.getName().equals("Grade"))
+            columnNames = new String[]{"学号", "姓名", "课程号", "课程名", "成绩"};
         JTable table = new JTable() {
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -34,9 +36,14 @@ public class Gui_Method {
         table.getTableHeader().setReorderingAllowed(false);
 
         try {
-            Method method_view = c.getMethod("view", Connection.class);
+            Method method_view;
+            if (!c.getName().equals("Grade"))
+                method_view = c.getMethod("view", Connection.class);
+            else {
+                method_view = c.getMethod("search", Connection.class, String.class);
+            }
             Method method_get = c.getMethod("get", ResultSet.class, String.class);
-            ResultSet rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), conn);
+            ResultSet rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn, "grade"});
             while (rs.next()) {
                 view.addRow((Object[]) method_get.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{rs, "view"}));
             }
@@ -60,14 +67,16 @@ public class Gui_Method {
         scrollPane.setViewportView(table);
 
         //创建按钮
-        JButton viewButton = getViewButton(conn, c, table, frame);
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(viewButton);
+        if (!c.getName().equals("Grade")) {
+            JButton viewButton = getViewButton(conn, c, table, frame);
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.add(viewButton);
+            panel.add(buttonPanel, BorderLayout.SOUTH);
+        }
 
         // 将组件添加到面板中
         panel.add(titleLabel, BorderLayout.PAGE_START);
         panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
 
         // 将面板添加到主窗口中
         frame.add(panel, BorderLayout.CENTER);

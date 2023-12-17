@@ -8,6 +8,7 @@ import java.sql.Connection;
 public class Gui {
     static final Gui_Student gui_student = new Gui_Student();
     static final Gui_Course gui_course = new Gui_Course();
+    static final Gui_Grade gui_grade = new Gui_Grade();
     static final Login login = new Login();
 
     public void Login_Frame(Connection conn) {
@@ -445,6 +446,10 @@ public class Gui {
         CourseButton.addActionListener(e -> {
             frame.dispose();
             gui_course.Course_View_Frame(conn, user, permissions);
+        });
+        ScoreButton.addActionListener(e -> {
+            frame.dispose();
+            gui_grade.Grade_View_Frame(conn, user, permissions);
         });
 
         // 将组件添加到面板中
