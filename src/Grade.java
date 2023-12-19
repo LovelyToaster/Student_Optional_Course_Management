@@ -19,17 +19,24 @@ public class Grade {
         try {
             String sql = null;
             if (type.equals("grade")) {
-                if (stu.equals("null"))
-                    sql = "select student_no,student.name,optional_course.course_no,course.course_name,grade from optional_course,student,course where student_no=student.no and optional_course.course_no=course.course_no";
-                else
-                    sql = "select student_no,student.name,optional_course.course_no,course.course_name,grade from optional_course,student,course where student_no=student.no and optional_course.course_no=course.course_no and student.no=?";
+                sql = "select student_no,student.name,optional_course.course_no,course.course_name,grade from optional_course,student,course where student_no=student.no and optional_course.course_no=course.course_no and student.no=?";
             }
             PreparedStatement ps = conn.prepareStatement(sql);
-            if (!stu.equals("null"))
-                ps.setString(1, stu);
+            ps.setString(1, stu);
             return ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ResultSet view(Connection conn) {
+        try {
+            String sql = "select student_no,student.name,optional_course.course_no,course.course_name,grade from optional_course,student,course where student_no=student.no and optional_course.course_no=course.course_no";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
