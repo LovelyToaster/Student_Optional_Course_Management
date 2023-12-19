@@ -26,6 +26,8 @@ public class Gui_Method {
             columnNames = new String[]{"学号", "姓名", "院系", "选课数量"};
         if (c.getName().equals("Grade"))
             columnNames = new String[]{"学号", "姓名", "课程号", "课程名", "成绩"};
+        if (c.getName().equals("Teacher"))
+            columnNames = new String[]{"序号", "姓名", "性别", "年龄", "学历", "职称", "毕业院校", "健康状况"};
         JTable table = new JTable() {
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -72,7 +74,7 @@ public class Gui_Method {
         scrollPane.setViewportView(table);
 
         //创建按钮
-        if (!c.getName().equals("Grade") && !permissions.equals("normal_user")) {
+        if (!c.getName().equals("Grade") && !c.getName().equals("Teacher") && !permissions.equals("normal_user")) {
             JButton viewButton = getViewButton(conn, c, table, frame);
             JPanel buttonPanel = new JPanel();
             buttonPanel.add(viewButton);

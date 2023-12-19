@@ -9,6 +9,7 @@ public class Gui {
     static final Gui_Student gui_student = new Gui_Student();
     static final Gui_Course gui_course = new Gui_Course();
     static final Gui_Grade gui_grade = new Gui_Grade();
+    static final Gui_Teacher gui_teacher = new Gui_Teacher();
     static final Login login = new Login();
 
     public void Login_Frame(Connection conn) {
@@ -438,11 +439,14 @@ public class Gui {
         ScoreButton.setFocusPainted(false);
         ScoreButton.setBorderPainted(false);
 
+        TeacherButton.addActionListener(e -> {
+            frame.dispose();
+            gui_teacher.Teacher_View_Frame(conn, user, permissions);
+        });
         StudentButton.addActionListener(e -> {
             frame.dispose();
             gui_student.Student_View_Frame(conn, user, permissions);
         });
-
         CourseButton.addActionListener(e -> {
             frame.dispose();
             gui_course.Course_View_Frame(conn, user, permissions);
