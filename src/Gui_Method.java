@@ -72,7 +72,7 @@ public class Gui_Method {
         scrollPane.setViewportView(table);
 
         //创建按钮
-        if (!c.getName().equals("Grade")) {
+        if (!c.getName().equals("Grade") && !permissions.equals("normal_user")) {
             JButton viewButton = getViewButton(conn, c, table, frame);
             JPanel buttonPanel = new JPanel();
             buttonPanel.add(viewButton);
