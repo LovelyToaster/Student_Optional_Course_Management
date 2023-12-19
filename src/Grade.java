@@ -15,13 +15,18 @@ public class Grade {
         }
     }
 
-    public ResultSet search(Connection conn, String type) {
+    public ResultSet search(Connection conn, String type, String stu) {
         try {
             String sql = null;
             if (type.equals("grade")) {
-                sql = "select student_no,student.name,optional_course.course_no,course.course_name,grade from optional_course,student,course where student_no=student.no and optional_course.course_no=course.course_no";
+                if (stu.equals("null"))
+                    sql = "select student_no,student.name,optional_course.course_no,course.course_name,grade from optional_course,student,course where student_no=student.no and optional_course.course_no=course.course_no";
+                else
+                    sql = "select student_no,student.name,optional_course.course_no,course.course_name,grade from optional_course,student,course where student_no=student.no and optional_course.course_no=course.course_no and student.no=?";
             }
             PreparedStatement ps = conn.prepareStatement(sql);
+            if (!stu.equals("null"))
+                ps.setString(1, stu);
             return ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);

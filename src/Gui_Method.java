@@ -40,12 +40,14 @@ public class Gui_Method {
             if (!c.getName().equals("Grade"))
                 method_view = c.getMethod("view", Connection.class);
             else {
-                method_view = c.getMethod("search", Connection.class, String.class);
+                method_view = c.getMethod("search", Connection.class, String.class, String.class);
             }
             Method method_get = c.getMethod("get", ResultSet.class, String.class);
             ResultSet rs = null;
-            if (c.getName().equals("Grade"))
-                rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn, "grade"});
+            if (c.getName().equals("Grade") && permissions.equals("normal_root"))
+                rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn, "grade", "null"});
+            else if (c.getName().equals("Grade") && permissions.equals("normal_user"))
+                rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn, "grade", user});
             else
                 rs = (ResultSet) method_view.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn});
             while (rs.next()) {
