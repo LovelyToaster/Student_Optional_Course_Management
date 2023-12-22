@@ -22,6 +22,34 @@ public class Course {
 
     }
 
+    public String add(Connection conn, Object[] o) {
+        String course_name = (String) o[0];
+        String course_teacher = (String) o[1];
+        if (course_name.isEmpty() || course_teacher.isEmpty())
+            return "empty";
+        try {
+            String no_sql = "select course_no from course order by course_no";
+            PreparedStatement ps_no = conn.prepareStatement(no_sql);
+            ResultSet rs_no = ps_no.executeQuery();
+            int no = 1;
+            while (rs_no.next()) {
+                if (no != rs_no.getInt(1))
+                    break;
+                no++;
+            }
+            String insert_sql = "insert into course (course_no,course_name,course_teacher) value(?,?,?)";
+            PreparedStatement ps_insert = conn.prepareStatement(insert_sql);
+            ps_insert.setInt(1, no);
+            ps_insert.setString(2, course_name);
+            ps_insert.setString(3, course_teacher);
+            ps_insert.executeUpdate();
+            return "normal";
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return "error";
+        }
+    }
+
     public Object[] get_course(ResultSet rs, String type) {
         try {
             if (type.equals("view"))

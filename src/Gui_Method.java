@@ -25,13 +25,20 @@ public class Gui_Method {
         panel.setBackground(new Color(135, 206, 235));
 
         // 创建标题标签
-        JLabel titleLabel = new JLabel("添加学生信息", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel();
+        if (c.getName().equals("Student"))
+            titleLabel = new JLabel("添加学生信息", SwingConstants.CENTER);
+        if (c.getName().equals("Course"))
+            titleLabel = new JLabel("添加课程信息", SwingConstants.CENTER);
         titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
         titleLabel.setForeground(Color.WHITE);
 
         // 创建输入框和标签
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(4, 2));
+        if (c.getName().equals("Student"))
+            inputPanel.setLayout(new GridLayout(4, 2));
+        if (c.getName().equals("Course"))
+            inputPanel.setLayout(new GridLayout(7, 2));
         inputPanel.setBackground(new Color(135, 206, 235));
 
         //字体
@@ -112,11 +119,43 @@ public class Gui_Method {
             table = null;
         }
 
+        //课程添加
+        JLabel course_nameLabel;
+        JLabel course_TeacherLabel;
+        JTextField course_nameTextField;
+        JComboBox<String> teacherComboBox;
+        if (c.getName().equals("Course")) {
+            course_nameLabel = new JLabel("课程名字");
+            course_TeacherLabel = new JLabel("任课教师");
+            course_nameLabel.setFont(font);
+            course_TeacherLabel.setFont(font);
+
+            course_nameTextField = new JTextField();
+
+            Teacher teacher = new Teacher();
+            //添加院系单选框
+            teacherComboBox = new JComboBox<>();
+            ResultSet rs_teacher = teacher.search(conn, "teacher_name");
+            try {
+                while (rs_teacher.next()) {
+                    teacherComboBox.addItem(rs_teacher.getString(1));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            inputPanel.add(course_nameLabel);
+            inputPanel.add(course_nameTextField);
+            inputPanel.add(course_TeacherLabel);
+            inputPanel.add(teacherComboBox);
+        } else {
+            teacherComboBox = null;
+            course_nameTextField = null;
+        }
+
         // 创建添加按钮
         JButton addButton = new JButton("添加");
-        addButton.setBackground(new
-
-                Color(70, 130, 180));
+        addButton.setBackground(new Color(70, 130, 180));
         addButton.setForeground(Color.WHITE);
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
@@ -137,6 +176,11 @@ public class Gui_Method {
                 String name = nameTextField.getText();
                 String faculties = (String) facultiesComboBox.getSelectedItem();
                 o = new Object[]{no, name, faculties, optional_course, course_teacher};
+            }
+            if (c.getName().equals("Course")) {
+                String course_name = course_nameTextField.getText();
+                String course_teacher = (String) teacherComboBox.getSelectedItem();
+                o = new Object[]{course_name, course_teacher};
             }
             if (o != null) {
                 try {
@@ -160,12 +204,17 @@ public class Gui_Method {
         });
 
         // 将组件添加到面板中
-        JPanel panel_center = new JPanel(new GridLayout(2, 1));
-        panel_center.add(inputPanel);
-        if (c.getName().equals("Student"))
+        JPanel panel_center = null;
+        if (c.getName().equals("Student")) {
+            panel_center = new JPanel(new GridLayout(2, 1));
+            panel_center.add(inputPanel);
             panel_center.add(panel_scrollPane);
+        }
         panel.add(titleLabel, BorderLayout.NORTH);
-        panel.add(panel_center, BorderLayout.CENTER);
+        if (c.getName().equals("Student"))
+            panel.add(panel_center, BorderLayout.CENTER);
+        else
+            panel.add(inputPanel, BorderLayout.CENTER);
         panel.add(addButton, BorderLayout.SOUTH);
 
         // 将面板添加到主窗口中

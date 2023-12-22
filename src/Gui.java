@@ -314,6 +314,10 @@ public class Gui {
             frame.dispose();
             gui_student.Student_Add_Frame(conn, user, permissions);
         });
+        CourseButton.addActionListener(e -> {
+            frame.dispose();
+            gui_course.Course_Add_Frame(conn, user, permissions);
+        });
         // 将组件添加到面板中
         panel.add(TeacherButton);
         panel.add(StudentButton);

@@ -14,6 +14,19 @@ public class Teacher {
         return new Object[0];
     }
 
+    public ResultSet search(Connection conn, String type) {
+        String sql = null;
+        if (type.equals("teacher_name"))
+            sql = "select teacher_name from teacher";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public ResultSet view(Connection conn) {
         try {
             String sql = "select * from teacher";
