@@ -6,9 +6,176 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Gui_Method {
     static final Gui gui = new Gui();
+
+    public void Add_Frame(Connection conn, Class<?> c, String user, String permissions) {
+        // 创建主窗口
+        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        frame.setSize(400, 400);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.setLocationRelativeTo(null);
+
+        // 创建面板
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBackground(new Color(135, 206, 235));
+
+        // 创建标题标签
+        JLabel titleLabel = new JLabel("添加学生信息", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
+        titleLabel.setForeground(Color.WHITE);
+
+        // 创建输入框和标签
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(4, 2));
+        inputPanel.setBackground(new Color(135, 206, 235));
+
+        //字体
+        Font font = new Font("宋体", Font.BOLD, 20);
+
+        //学生添加
+        JLabel noLabel;
+        JLabel nameLabel;
+        JLabel facultiesLabel;
+        JLabel optional_courseLabel;
+        JTextField noTextField;
+        JTextField nameTextField;
+        JComboBox<String> facultiesComboBox;
+        JTable table;
+        JPanel panel_scrollPane = null;
+        if (c.getName().equals("Student")) {
+            noLabel = new JLabel("学号：");
+            nameLabel = new JLabel("姓名：");
+            facultiesLabel = new JLabel("院系：");
+            optional_courseLabel = new JLabel("选课信息：");
+
+            noLabel.setFont(font);
+            nameLabel.setFont(font);
+            facultiesLabel.setFont(font);
+            optional_courseLabel.setFont(font);
+
+            noTextField = new JTextField();
+            nameTextField = new JTextField();
+
+            Student stu = new Student();
+            //添加院系单选框
+            facultiesComboBox = new JComboBox<>();
+            ResultSet rs_faculties = stu.search_student(conn, "faculties", "null");
+            try {
+                while (rs_faculties.next()) {
+                    facultiesComboBox.addItem(rs_faculties.getString(1));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            //创建复选框
+            String[] columnNames = {"课程名", "任课教师"};
+            table = new JTable() {
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
+            stu_view.setColumnIdentifiers(columnNames);
+            table.getTableHeader().setReorderingAllowed(false);
+            ResultSet rs = stu.search_student(conn, "course", "null");
+            try {
+                while (rs.next()) {
+                    stu_view.addRow(stu.get_student(rs, "add"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            JScrollPane scrollPane = new JScrollPane();
+            scrollPane.setViewportView(table);
+
+            panel_scrollPane = new JPanel(new GridLayout(1, 1));
+            panel_scrollPane.add(scrollPane);
+
+            // 组件添加到面板
+            inputPanel.add(noLabel);
+            inputPanel.add(noTextField);
+            inputPanel.add(nameLabel);
+            inputPanel.add(nameTextField);
+            inputPanel.add(facultiesLabel);
+            inputPanel.add(facultiesComboBox);
+            inputPanel.add(optional_courseLabel);
+        } else {
+            nameTextField = null;
+            noTextField = null;
+            facultiesComboBox = null;
+            table = null;
+        }
+
+        // 创建添加按钮
+        JButton addButton = new JButton("添加");
+        addButton.setBackground(new
+
+                Color(70, 130, 180));
+        addButton.setForeground(Color.WHITE);
+        addButton.setFocusPainted(false);
+        addButton.setBorderPainted(false);
+
+        // 添加按钮点击事件监听器
+        addButton.addActionListener(e ->
+        {
+            Object[] o = null;
+            if (c.getName().equals("Student")) {
+                int[] rows = table.getSelectedRows();
+                ArrayList<String> optional_course = new ArrayList<>();
+                ArrayList<String> course_teacher = new ArrayList<>();
+                for (int row : rows) {
+                    optional_course.add(table.getValueAt(row, 0).toString());
+                    course_teacher.add(table.getValueAt(row, 1).toString());
+                }
+                String no = noTextField.getText();
+                String name = nameTextField.getText();
+                String faculties = (String) facultiesComboBox.getSelectedItem();
+                o = new Object[]{no, name, faculties, optional_course, course_teacher};
+            }
+            if (o != null) {
+                try {
+                    Method method_add = c.getMethod("add", Connection.class, Object[].class);
+                    String flag = (String) method_add.invoke(c.getDeclaredConstructor().newInstance(), new Object[]{conn, o});
+                    if (flag.equals("normal")) {
+                        JOptionPane.showMessageDialog(frame, "添加成功!");
+                        frame.dispose();
+                        gui.Main_Frame(conn, user, permissions);
+                    } else {
+                        if (flag.equals("error"))
+                            JOptionPane.showMessageDialog(frame, "添加失败!请检查数据");
+                        if (flag.equals("empty"))
+                            JOptionPane.showMessageDialog(frame, "添加失败!数据输入不完整");
+                    }
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                         InvocationTargetException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        // 将组件添加到面板中
+        JPanel panel_center = new JPanel(new GridLayout(2, 1));
+        panel_center.add(inputPanel);
+        if (c.getName().equals("Student"))
+            panel_center.add(panel_scrollPane);
+        panel.add(titleLabel, BorderLayout.NORTH);
+        panel.add(panel_center, BorderLayout.CENTER);
+        panel.add(addButton, BorderLayout.SOUTH);
+
+        // 将面板添加到主窗口中
+        frame.add(panel, BorderLayout.CENTER);
+
+        // 显示主窗口
+        frame.setVisible(true);
+
+        gui.addWindowListener(conn, frame, user, permissions);
+    }
 
     public void View_Frame(Connection conn, Class<?> c, String user, String permissions) {
         // 创建主窗口

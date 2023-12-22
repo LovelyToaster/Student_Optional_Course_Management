@@ -3,7 +3,12 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Student {
-    public String add_student(Connection conn, String stu_no, String stu_name, String stu_faculties, ArrayList<String> optional_course, ArrayList<String> course_teacher) { // 添加学生
+    public String add(Connection conn, Object[] o) { // 添加学生
+        String stu_no = (String) o[0];
+        String stu_name = (String) o[1];
+        String stu_faculties = (String) o[2];
+        ArrayList<String> optional_course = castList(o[3], String.class);
+        ArrayList<String> course_teacher = castList(o[4], String.class);
         if (stu_no.isEmpty() || stu_name.isEmpty()) {
             return "empty";
         }
@@ -242,5 +247,16 @@ public class Student {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static <T> ArrayList<T> castList(Object obj, Class<T> c) {
+        ArrayList<T> result = new ArrayList<T>();
+        if (obj instanceof ArrayList<?>) {
+            for (Object o : (ArrayList<?>) obj) {
+                result.add(c.cast(o));
+            }
+            return result;
+        }
+        return null;
     }
 }
