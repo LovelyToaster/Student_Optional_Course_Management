@@ -226,16 +226,11 @@ public class Student {
                 PreparedStatement ps_no = conn.prepareStatement(no_sql);
                 ResultSet rs_no = ps_no.executeQuery();
                 int no = 1;
-                int flag = 0;
                 while (rs_no.next()) {
-                    if (no != rs_no.getInt(1)) {
-                        flag = 1;
+                    if (no != rs_no.getInt(1))
                         break;
-                    }
                     no++;
                 }
-                if (flag == 0)
-                    no = rs_no.getInt(1) + 1;
                 String insert_optional_course = "INSERT INTO optional_course (no, student_no, course_no) value(?, ?, (SELECT course_no FROM course WHERE course_name = ? and course_teacher = ?))";
                 PreparedStatement ps_insert_optional_course = conn.prepareStatement(insert_optional_course);
                 ps_insert_optional_course.setInt(1, no);
