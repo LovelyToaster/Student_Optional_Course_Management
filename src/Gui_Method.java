@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Gui_Method {
     static final Gui gui = new Gui();
@@ -236,7 +237,7 @@ public class Gui_Method {
         {
             Object[] o = null;
             if (c.getName().equals("Student")) {
-                int[] rows = table.getSelectedRows();
+                int[] rows = Objects.requireNonNull(table).getSelectedRows();
                 ArrayList<String> optional_course = new ArrayList<>();
                 ArrayList<String> course_teacher = new ArrayList<>();
                 for (int row : rows) {
@@ -249,12 +250,12 @@ public class Gui_Method {
                 o = new Object[]{no, name, faculties, optional_course, course_teacher};
             }
             if (c.getName().equals("Course")) {
-                String course_name = course_nameTextField.getText();
+                String course_name = Objects.requireNonNull(course_nameTextField).getText();
                 String course_teacher = (String) teacherComboBox.getSelectedItem();
                 o = new Object[]{course_name, course_teacher};
             }
             if (c.getName().equals("Teacher")) {
-                String teacher_name = teacher_nameTextField.getText();
+                String teacher_name = Objects.requireNonNull(teacher_nameTextField).getText();
                 String teacher_sex = (String) teacher_sexComboBox.getSelectedItem();
                 String teacher_age = teacher_ageTextField.getText();
                 String teacher_degree = teacher_degreeTextField.getText();
