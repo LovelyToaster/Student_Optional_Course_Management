@@ -30,6 +30,8 @@ public class Gui_Method {
             titleLabel = new JLabel("添加学生信息", SwingConstants.CENTER);
         if (c.getName().equals("Course"))
             titleLabel = new JLabel("添加课程信息", SwingConstants.CENTER);
+        if (c.getName().equals("Teacher"))
+            titleLabel = new JLabel("添加教师信息", SwingConstants.CENTER);
         titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
         titleLabel.setForeground(Color.WHITE);
 
@@ -39,6 +41,8 @@ public class Gui_Method {
             inputPanel.setLayout(new GridLayout(4, 2));
         if (c.getName().equals("Course"))
             inputPanel.setLayout(new GridLayout(7, 2));
+        if (c.getName().equals("Teacher"))
+            inputPanel.setLayout(new GridLayout(9, 2));
         inputPanel.setBackground(new Color(135, 206, 235));
 
         //字体
@@ -153,6 +157,73 @@ public class Gui_Method {
             course_nameTextField = null;
         }
 
+        //教师添加
+        JLabel teacher_nameLabel;
+        JLabel teacher_sexLabel;
+        JLabel teacher_ageLabel;
+        JLabel teacher_degreeLabel;
+        JLabel teacher_jobLabel;
+        JLabel teacher_graduate_institutionsLabel;
+        JLabel teacher_healthLabel;
+        JTextField teacher_nameTextField;
+        JTextField teacher_ageTextField;
+        JTextField teacher_degreeTextField;
+        JTextField teacher_jobTextField;
+        JTextField teacher_graduate_institutionsTextField;
+        JComboBox<String> teacher_sexComboBox;
+        JComboBox<String> teacher_healthComboBox;
+        if (c.getName().equals("Teacher")) {
+            teacher_nameLabel = new JLabel("教师姓名");
+            teacher_sexLabel = new JLabel("教师性别");
+            teacher_ageLabel = new JLabel("教师年龄");
+            teacher_degreeLabel = new JLabel("教师学历");
+            teacher_jobLabel = new JLabel("教师职位");
+            teacher_graduate_institutionsLabel = new JLabel("教师毕业院校");
+            teacher_healthLabel = new JLabel("教师健康状况");
+
+            teacher_nameTextField = new JTextField();
+            teacher_ageTextField = new JTextField();
+            teacher_degreeTextField = new JTextField();
+            teacher_jobTextField = new JTextField();
+            teacher_graduate_institutionsTextField = new JTextField();
+
+            String[] sex = {"男", "女"};
+            String[] health = {"健康", "不健康"};
+            teacher_sexComboBox = new JComboBox<>(sex);
+            teacher_healthComboBox = new JComboBox<>(health);
+
+            teacher_nameLabel.setFont(font);
+            teacher_sexLabel.setFont(font);
+            teacher_ageLabel.setFont(font);
+            teacher_degreeLabel.setFont(font);
+            teacher_jobLabel.setFont(font);
+            teacher_graduate_institutionsLabel.setFont(font);
+            teacher_healthLabel.setFont(font);
+
+            inputPanel.add(teacher_nameLabel);
+            inputPanel.add(teacher_nameTextField);
+            inputPanel.add(teacher_sexLabel);
+            inputPanel.add(teacher_sexComboBox);
+            inputPanel.add(teacher_ageLabel);
+            inputPanel.add(teacher_ageTextField);
+            inputPanel.add(teacher_degreeLabel);
+            inputPanel.add(teacher_degreeTextField);
+            inputPanel.add(teacher_jobLabel);
+            inputPanel.add(teacher_jobTextField);
+            inputPanel.add(teacher_graduate_institutionsLabel);
+            inputPanel.add(teacher_graduate_institutionsTextField);
+            inputPanel.add(teacher_healthLabel);
+            inputPanel.add(teacher_healthComboBox);
+        } else {
+            teacher_healthComboBox = null;
+            teacher_jobTextField = null;
+            teacher_graduate_institutionsTextField = null;
+            teacher_degreeTextField = null;
+            teacher_ageTextField = null;
+            teacher_sexComboBox = null;
+            teacher_nameTextField = null;
+        }
+
         // 创建添加按钮
         JButton addButton = new JButton("添加");
         addButton.setBackground(new Color(70, 130, 180));
@@ -181,6 +252,16 @@ public class Gui_Method {
                 String course_name = course_nameTextField.getText();
                 String course_teacher = (String) teacherComboBox.getSelectedItem();
                 o = new Object[]{course_name, course_teacher};
+            }
+            if (c.getName().equals("Teacher")) {
+                String teacher_name = teacher_nameTextField.getText();
+                String teacher_sex = (String) teacher_sexComboBox.getSelectedItem();
+                String teacher_age = teacher_ageTextField.getText();
+                String teacher_degree = teacher_degreeTextField.getText();
+                String teacher_job = teacher_jobTextField.getText();
+                String teacher_graduate_institutions = teacher_graduate_institutionsTextField.getText();
+                String teacher_health = (String) teacher_healthComboBox.getSelectedItem();
+                o = new Object[]{teacher_name, teacher_sex, teacher_age, teacher_degree, teacher_job, teacher_graduate_institutions, teacher_health};
             }
             if (o != null) {
                 try {

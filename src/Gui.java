@@ -310,6 +310,10 @@ public class Gui {
         ScoreButton.setFocusPainted(false);
         ScoreButton.setBorderPainted(false);
 
+        TeacherButton.addActionListener(e -> {
+            frame.dispose();
+            gui_teacher.Teacher_Add_Frame(conn, user, permissions);
+        });
         StudentButton.addActionListener(e -> {
             frame.dispose();
             gui_student.Student_Add_Frame(conn, user, permissions);
