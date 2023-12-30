@@ -303,13 +303,6 @@ public class Gui {
         CourseButton.setFocusPainted(false);
         CourseButton.setBorderPainted(false);
 
-        JButton ScoreButton = new JButton("添加成绩信息");
-        ScoreButton.setBackground(new Color(70, 130, 180));
-        ScoreButton.setFont(new Font("宋体", Font.BOLD, 20));
-        ScoreButton.setForeground(Color.WHITE);
-        ScoreButton.setFocusPainted(false);
-        ScoreButton.setBorderPainted(false);
-
         TeacherButton.addActionListener(e -> {
             frame.dispose();
             gui_teacher.Teacher_Add_Frame(conn, user, permissions);
@@ -326,7 +319,6 @@ public class Gui {
         panel.add(TeacherButton);
         panel.add(StudentButton);
         panel.add(CourseButton);
-        panel.add(ScoreButton);
 
         // 将面板添加到主窗口中
         frame.add(panel, BorderLayout.CENTER);
