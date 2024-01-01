@@ -6,10 +6,10 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 
 public class Gui {
-    static final Gui_Student gui_student = new Gui_Student();
     static final Gui_Course gui_course = new Gui_Course();
     static final Gui_Grade gui_grade = new Gui_Grade();
     static final Gui_Teacher gui_teacher = new Gui_Teacher();
+    static final Gui_Method gui_method = new Gui_Method();
     static final Login login = new Login();
 
     public void Login_Frame(Connection conn) {
@@ -309,7 +309,7 @@ public class Gui {
         });
         StudentButton.addActionListener(e -> {
             frame.dispose();
-            gui_student.Student_Add_Frame(conn, user, permissions);
+            gui_method.Add_Frame(conn, Student.class, user, permissions);
         });
         CourseButton.addActionListener(e -> {
             frame.dispose();
@@ -371,7 +371,7 @@ public class Gui {
 
             StudentButton.addActionListener(e -> {
                 frame.dispose();
-                gui_student.Student_Management_Frame(conn, user, permissions);
+                gui_method.Management_Frame(conn, Student.class, user, permissions);
             });
 
             // 将组件添加到面板中
@@ -388,7 +388,7 @@ public class Gui {
 
             addWindowListener(conn, frame, user, permissions);
         } else {
-            gui_student.Student_Management_Frame(conn, user, permissions);
+            gui_method.Management_Frame(conn, Student.class, user, permissions);
         }
     }
 
@@ -445,7 +445,7 @@ public class Gui {
         });
         StudentButton.addActionListener(e -> {
             frame.dispose();
-            gui_student.Student_View_Frame(conn, user, permissions);
+            gui_method.View_Frame(conn, Student.class, user, permissions);
         });
         CourseButton.addActionListener(e -> {
             frame.dispose();

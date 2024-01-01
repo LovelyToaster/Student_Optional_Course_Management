@@ -153,7 +153,12 @@ public class Student {
         }
     }
 
-    public String modify_student(Connection conn, String s_no, String s_name, String s_faculties, ArrayList<String> optional_course, ArrayList<String> course_teacher, String type) { // 修改学生信息
+    public String modify(Connection conn, String type, Object[] o) { // 修改学生信息
+        String s_no = (String) o[0];
+        String s_name = (String) o[1];
+        String s_faculties = (String) o[2];
+        ArrayList<String> optional_course = castList(o[3], String.class);
+        ArrayList<String> course_teacher = castList(o[4], String.class);
         try {
             if (type.equals("add")) {
                 stu_course_add(conn, s_no, optional_course, course_teacher);
@@ -182,7 +187,7 @@ public class Student {
         }
     }
 
-    public void delete_student(Connection conn, String student_no) { // 删除学生信息
+    public void delete(Connection conn, String student_no) { // 删除学生信息
         try {
             String stu_sql = "delete from student where no = ? ";
             String login_sql = "delete from login where username = ?";
@@ -192,17 +197,6 @@ public class Student {
             ps_login.setString(1, student_no);
             ps_stu.executeUpdate();
             ps_login.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public ResultSet view_student(Connection conn) {
-        try {
-            count(conn);
-            String sql = "select * from student_optional_course_management.student";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            return ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
