@@ -82,8 +82,12 @@ public class Course {
             }
             if (type.equals("no"))
                 sql = "select * from  course where course_no=?";
-            if (type.equals("name"))
-                sql = "select * from  course where course_name=?";
+            if (type.equals("name")) {
+                if (course.equals("null"))
+                    sql = "select course_name from course";
+                else
+                    sql = "select * from  course where course_name=?";
+            }
             if (type.equals("teacher")) {
                 if (course.equals("null"))
                     sql = "select course_teacher from course";

@@ -55,6 +55,7 @@ public class Gui_Methods {
             case "Teacher" ->
                     columnNames = new String[]{"序号", "姓名", "性别", "年龄", "学历", "职称", "毕业院校", "健康"};
             case "Course" -> columnNames = new String[]{"序号", "课程名字", "任课教师", "学生数量"};
+            case "Grade" -> columnNames = new String[]{"学号", "姓名", "课程号", "课程名", "成绩"};
         }
         return columnNames;
     }

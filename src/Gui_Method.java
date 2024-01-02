@@ -17,6 +17,7 @@ public class Gui_Method {
     static final Gui_Methods_Student gui_methods_student = new Gui_Methods_Student();
     static final Gui_Methods_Teacher gui_methods_teacher = new Gui_Methods_Teacher();
     static final Gui_Methods_Course gui_methods_course = new Gui_Methods_Course();
+    static final Gui_Methods_Grade gui_methods_grade = new Gui_Methods_Grade();
 
     public void Add_Frame(Connection conn, Class<?> c, String user, String permissions) {
         // 创建主窗口
@@ -400,6 +401,8 @@ public class Gui_Method {
                                     gui_methods_teacher.Management_Modify(frame, dialog, table, confirmButton, conn, selectedRow);
                             case "Course" ->
                                     gui_methods_course.Management_Modify(frame, dialog, table, confirmButton, conn, selectedRow);
+                            case "Grade" ->
+                                    gui_methods_grade.Management_Modify(frame, dialog, table, confirmButton, conn, selectedRow);
                         }
                     } else {
                         JOptionPane.showMessageDialog(frame, "请选择要修改的学生!");
@@ -413,6 +416,7 @@ public class Gui_Method {
                         case "Student" -> gui_methods_student.Management_Search(frame, view, conn);
                         case "Teacher" -> gui_methods_teacher.Management_Search(frame, view, conn);
                         case "Course" -> gui_methods_course.Management_Search(frame, view, conn);
+                        case "Grade" -> gui_methods_grade.Management_Search(frame, view, conn);
                     }
                 }
             });

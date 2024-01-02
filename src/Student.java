@@ -120,8 +120,12 @@ public class Student {
             String sql = null;
             if (type.equals("no"))
                 sql = "select * from student where no = ?";
-            if (type.equals("name"))
-                sql = "select * from student where name like ?";
+            if (type.equals("name")) {
+                if (stu.equals("null"))
+                    sql = "select name from student";
+                else
+                    sql = "select * from student where name like ?";
+            }
             if (type.equals("faculties")) {
                 if (stu.equals("null"))
                     sql = "select distinct faculties from faculties ";
@@ -143,7 +147,7 @@ public class Student {
                 sql = "select course_name,course_teacher from course";
             }
             PreparedStatement ps = conn.prepareStatement(sql);
-            if (type.equals("name"))
+            if (type.equals("name") && !stu.equals("null"))
                 ps.setString(1, "%" + stu + "%");
             else if (!stu.equals("null"))
                 ps.setString(1, stu);
