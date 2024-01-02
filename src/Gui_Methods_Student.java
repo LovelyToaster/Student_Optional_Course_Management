@@ -40,7 +40,7 @@ public class Gui_Methods_Student extends Gui_Methods {
         }
         if (message != null && message.equals(option[3])) {
             ArrayList<String> option_array = new ArrayList<>();
-            String flag = super.Search_AddOption(conn, Student.class, "faculties", option_array);
+            String flag = super.Search_AddOption(conn, Student.class, "optional_course", option_array);
             if (flag.equals("normal")) {
                 String[] option_optional_course = option_array.toArray(new String[0]);
                 String info = (String) JOptionPane.showInputDialog(frame, "请选择课程", "提示", JOptionPane.QUESTION_MESSAGE, null, option_optional_course, option_optional_course[0]);
@@ -54,7 +54,6 @@ public class Gui_Methods_Student extends Gui_Methods {
 
     public void Management_Modify(JFrame frame, JDialog dialog, JTable table, JButton confirmButton, Connection conn, int selectedRow) {
         JButton modButton = new JButton("修改");
-        ;
         Class<?> c = Student.class;
         JTextField stu_no = new JTextField((String) table.getValueAt(selectedRow, 0), 80);
         JTextField stu_name = new JTextField((String) table.getValueAt(selectedRow, 1), 80);
@@ -236,8 +235,8 @@ public class Gui_Methods_Student extends Gui_Methods {
                         }
                         Object[] o = {"null", "null", optional_course, null};
                         try {
-                            Method method_modify = c.getMethod("modify", String.class, Object[].class);
-                            String flag = (String) method_modify.invoke(c.getDeclaredConstructor().newInstance(), "delete", o);
+                            Method method_modify = c.getMethod("modify", Connection.class, String.class, Object[].class);
+                            String flag = (String) method_modify.invoke(c.getDeclaredConstructor().newInstance(), conn, "delete", o);
                             if (flag.equals("normal"))
                                 JOptionPane.showMessageDialog(stu_dialog, "删除成功!");
                         } catch (InvocationTargetException | IllegalAccessException |
@@ -284,8 +283,8 @@ public class Gui_Methods_Student extends Gui_Methods {
                 ArrayList<String> course_teacher = new ArrayList<>();
                 Object[] o = {s_no, s_name, s_faculties, optional_course, course_teacher};
                 try {
-                    Method method_modify = c.getMethod("modify", String.class, Object[].class);
-                    String flag = (String) method_modify.invoke(c.getDeclaredConstructor().newInstance(), "null", o);
+                    Method method_modify = c.getMethod("modify", Connection.class, String.class, Object[].class);
+                    String flag = (String) method_modify.invoke(c.getDeclaredConstructor().newInstance(), conn, "null", o);
                     if (flag.equals("1")) {
                         JOptionPane.showMessageDialog(frame, "修改失败,重复选课!");
                     } else {

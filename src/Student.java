@@ -84,7 +84,7 @@ public class Student {
                 if (stu.equals("null"))
                     sql = "select distinct course_name from course,optional_course where course.course_no=optional_course.course_no";
                 else
-                    sql = "select * from student where no = (select student_no from optional_course where course_no = (select course_no from course where course_name = ?))";
+                    sql = "select * from student where no in (select student_no from optional_course where course_no in (select course_no from course where course_name = ?))";
             }
             if (type.equals("optional_course_no")) {
                 sql = "select course_name,course_teacher from course where course_no in (select course_no from optional_course where student_no = ?)";

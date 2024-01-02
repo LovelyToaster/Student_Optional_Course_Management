@@ -23,7 +23,7 @@ public class Gui_Method {
 
     public void Add_Frame(Connection conn, Class<?> c, String user, String permissions) {
         // 创建主窗口
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        JFrame frame = new JFrame("学生选课信息管理系统");
         frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -318,7 +318,7 @@ public class Gui_Method {
     }
 
     public void Management_Frame(Connection conn, Class<?> c, String user, String permissions) {
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        JFrame frame = new JFrame("学生选课信息管理系统");
         if (permissions.equals("normal_root"))
             frame.setSize(700, 700);
         else
@@ -591,7 +591,7 @@ public class Gui_Method {
         panel.setBackground(new Color(135, 206, 235));
 
         // 创建标题标签
-        JLabel titleLabel = new JLabel("所有的学生宿舍信息", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("所有信息", SwingConstants.CENTER);
         titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
         titleLabel.setForeground(Color.WHITE);
 

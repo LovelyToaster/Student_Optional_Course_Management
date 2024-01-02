@@ -113,7 +113,7 @@ public class Gui {
 
     public void Main_Frame(Connection conn, String user, String permissions) {
         // 创建主窗口
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        JFrame frame = new JFrame("学生选课信息管理系统");
         frame.setSize(500, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -129,7 +129,7 @@ public class Gui {
         panel.setBackground(new Color(135, 206, 235));
 
         // 创建标题标签
-        JLabel titleLabel = new JLabel("欢迎使用学生宿舍信息管理系统", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("欢迎使用学生选课信息管理系统", SwingConstants.CENTER);
         titleLabel.setFont(new Font("宋体", Font.BOLD, 25));
         titleLabel.setForeground(Color.WHITE);
 
@@ -310,13 +310,13 @@ public class Gui {
     }
 
     public void Add_Frame(Connection conn, String user, String permissions) {
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        JFrame frame = new JFrame("学生选课信息管理系统");
         frame.setSize(300, 400);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1));
+        panel.setLayout(new GridLayout(3, 1));
         panel.setBackground(new Color(135, 206, 235));
 
         // 创建按钮
@@ -369,13 +369,13 @@ public class Gui {
 
     public void Management_Frame(Connection conn, String user, String permissions) {
         if (permissions.equals("normal_root")) {
-            JFrame frame = new JFrame("学生宿舍信息管理系统");
+            JFrame frame = new JFrame("学生选课信息管理系统");
             frame.setSize(300, 400);
             frame.setLayout(new BorderLayout());
             frame.setLocationRelativeTo(null);
 
             JPanel panel = new JPanel();
-            panel.setLayout(new GridLayout(5, 1));
+            panel.setLayout(new GridLayout(4, 1));
             panel.setBackground(new Color(135, 206, 235));
 
             // 创建按钮
@@ -442,7 +442,7 @@ public class Gui {
     }
 
     public void View_Frame(Connection conn, String user, String permissions) {
-        JFrame frame = new JFrame("学生宿舍信息管理系统");
+        JFrame frame = new JFrame("学生选课信息管理系统");
         frame.setSize(300, 400);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
