@@ -32,18 +32,29 @@ public class Gui_Methods {
         }
     }
 
-    public String Search_AddOption(Connection conn, ArrayList<String> option_array) {
+    public String Search_AddOption(Connection conn, Class<?> c, String type, ArrayList<String> option_array) {
         String flag = "error";
-        Student stu = new Student();
         try {
-            ResultSet rs = stu.search(conn, "faculties", "null");
+            Method method_search = c.getMethod("search", Connection.class, String.class, String.class);
+            ResultSet rs = (ResultSet) method_search.invoke(c.getDeclaredConstructor().newInstance(), conn, type, "null");
             while (rs.next()) {
                 flag = "normal";
                 option_array.add(rs.getString(1));
             }
-        } catch (SQLException s) {
+        } catch (SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException s) {
             throw new RuntimeException(s);
         }
         return flag;
     }
+
+    public String[] Management_columnNames(String type) {
+        String[] columnNames = null;
+        if (type.equals("Student"))
+            columnNames = new String[]{"学号", "姓名", "院系", "选课数量"};
+        if (type.equals("Teacher"))
+            columnNames = new String[]{"序号", "姓名", "性别", "年龄", "学历", "职称", "毕业院校", "健康"};
+        return columnNames;
+    }
+
 }

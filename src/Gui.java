@@ -369,11 +369,14 @@ public class Gui {
             ScoreButton.setFocusPainted(false);
             ScoreButton.setBorderPainted(false);
 
+            TeacherButton.addActionListener(e -> {
+                frame.dispose();
+                gui_method.Management_Frame(conn, Teacher.class, user, permissions);
+            });
             StudentButton.addActionListener(e -> {
                 frame.dispose();
                 gui_method.Management_Frame(conn, Student.class, user, permissions);
             });
-
             // 将组件添加到面板中
             panel.add(TeacherButton);
             panel.add(StudentButton);
