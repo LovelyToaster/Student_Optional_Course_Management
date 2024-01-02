@@ -6,7 +6,6 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 
 public class Gui {
-    static final Gui_Teacher gui_teacher = new Gui_Teacher();
     static final Gui_Method gui_method = new Gui_Method();
     static final Login login = new Login();
 
@@ -303,7 +302,7 @@ public class Gui {
 
         TeacherButton.addActionListener(e -> {
             frame.dispose();
-            gui_teacher.Teacher_Add_Frame(conn, user, permissions);
+            gui_method.Add_Frame(conn, Teacher.class, user, permissions);
         });
         StudentButton.addActionListener(e -> {
             frame.dispose();
@@ -450,7 +449,7 @@ public class Gui {
 
         TeacherButton.addActionListener(e -> {
             frame.dispose();
-            gui_teacher.Teacher_View_Frame(conn, user, permissions);
+            gui_method.View_Frame(conn, Teacher.class, user, permissions);
         });
         StudentButton.addActionListener(e -> {
             frame.dispose();
