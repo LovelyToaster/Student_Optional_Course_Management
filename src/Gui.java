@@ -122,7 +122,7 @@ public class Gui {
         // 创建面板
         JPanel panel;
         if (permissions.equals("normal_root")) {
-            panel = new JPanel(new GridLayout(7, 1));
+            panel = new JPanel(new GridLayout(8, 1));
         } else {
             panel = new JPanel(new GridLayout(6, 1));
         }
@@ -176,6 +176,13 @@ public class Gui {
         passwordmodButton.setForeground(Color.WHITE);
         passwordmodButton.setFocusPainted(false);
         passwordmodButton.setBorderPainted(false);
+
+        JButton StudentPasswordButton = new JButton("重置学生密码");
+        StudentPasswordButton.setBackground(new Color(70, 130, 180));
+        StudentPasswordButton.setFont(new Font("宋体", Font.BOLD, 20));
+        StudentPasswordButton.setForeground(Color.WHITE);
+        StudentPasswordButton.setFocusPainted(false);
+        StudentPasswordButton.setBorderPainted(false);
 
         JButton exitButton = new JButton("退出到登陆界面");
         exitButton.setBackground(new Color(70, 130, 180));
@@ -245,6 +252,39 @@ public class Gui {
             stu_dialog.setModal(true);
             stu_dialog.setVisible(true);
         });
+        StudentPasswordButton.addActionListener(e -> {
+            JDialog stu_dialog = new JDialog();
+            JButton confirmButton = new JButton("确认");
+            stu_dialog.setSize(300, 200);
+            stu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            stu_dialog.setLocationRelativeTo(null);
+            stu_dialog.setTitle("请输入信息");
+
+            JTextField user_frame = new JTextField();
+            JPanel panel1 = new JPanel(new GridLayout(3, 2));
+            panel1.add(new JLabel("要重置密码的用户"));
+            panel1.add(user_frame);
+
+            confirmButton.addActionListener(e1 -> {
+                String flag = login.password_restart(conn, user_frame.getText());
+                if (flag.equals("normal")) {
+                    JOptionPane.showMessageDialog(frame, "密码重置成功!默认密码为123456");
+                    stu_dialog.dispose();
+                } else if (flag.equals("empty")) {
+                    JOptionPane.showMessageDialog(frame, "请输入完整信息!");
+                }
+            });
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            buttonPanel.add(confirmButton);
+
+            stu_dialog.getContentPane().setLayout(new BorderLayout());
+            stu_dialog.getContentPane().add(panel1, BorderLayout.CENTER);
+            stu_dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+            stu_dialog.setModal(true);
+            stu_dialog.setVisible(true);
+        });
         exitButton.addActionListener(e -> {
             frame.dispose();
             Login_Frame(conn);
@@ -259,6 +299,7 @@ public class Gui {
         panel.add(managementButton);
         panel.add(viewButton);
         panel.add(passwordmodButton);
+        panel.add(StudentPasswordButton);
         panel.add(exitButton);
 
         // 将面板添加到主窗口中
@@ -334,7 +375,7 @@ public class Gui {
             frame.setLocationRelativeTo(null);
 
             JPanel panel = new JPanel();
-            panel.setLayout(new GridLayout(4, 1));
+            panel.setLayout(new GridLayout(5, 1));
             panel.setBackground(new Color(135, 206, 235));
 
             // 创建按钮

@@ -64,5 +64,17 @@ public class Login {
         }
     }
 
-
+    public String password_restart(Connection conn, String username) {
+        if (username.isEmpty())
+            return "empty";
+        try {
+            String sql = "update login set userpassword=123456 where username=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, username);
+            ps.executeUpdate();
+            return "normal";
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
