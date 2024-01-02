@@ -50,10 +50,12 @@ public class Gui_Methods {
 
     public String[] Management_columnNames(String type) {
         String[] columnNames = null;
-        if (type.equals("Student"))
-            columnNames = new String[]{"学号", "姓名", "院系", "选课数量"};
-        if (type.equals("Teacher"))
-            columnNames = new String[]{"序号", "姓名", "性别", "年龄", "学历", "职称", "毕业院校", "健康"};
+        switch (type) {
+            case "Student" -> columnNames = new String[]{"学号", "姓名", "院系", "选课数量"};
+            case "Teacher" ->
+                    columnNames = new String[]{"序号", "姓名", "性别", "年龄", "学历", "职称", "毕业院校", "健康"};
+            case "Course" -> columnNames = new String[]{"序号", "课程名字", "任课教师", "学生数量"};
+        }
         return columnNames;
     }
 

@@ -50,18 +50,6 @@ public class Course {
         }
     }
 
-    public Object[] get_course(ResultSet rs, String type) {
-        try {
-            if (type.equals("view"))
-                return new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};
-            if (type.equals("management"))
-                return new Object[]{rs.getString(1), rs.getString(2)};
-            return new Object[0];
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public Object[] get(ResultSet rs, String type) {
         try {
             if (type.equals("view"))
@@ -92,9 +80,37 @@ public class Course {
             if (type.equals("optional_course_no")) {
                 sql = "select student_no,name from optional_course,student where student_no=student.no and course_no=?";
             }
+            if (type.equals("no"))
+                sql = "select * from  course where course_no=?";
+            if (type.equals("name"))
+                sql = "select * from  course where course_name=?";
+            if (type.equals("teacher")) {
+                if (course.equals("null"))
+                    sql = "select course_teacher from course";
+                else
+                    sql = "select * from course where course_teacher=?";
+            }
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, course);
+            if (!course.equals("null"))
+                ps.setString(1, course);
             return ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String modify(Connection conn, Object[] o) {
+        int course_no = Integer.parseInt(o[0].toString());
+        String course_name = (String) o[1];
+        String course_teacher = (String) o[2];
+        try {
+            String sql = "update course set course_name=?,course_teacher=? where course_no=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, course_name);
+            ps.setString(2, course_teacher);
+            ps.setInt(3, course_no);
+            ps.executeUpdate();
+            return "normal";
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

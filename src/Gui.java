@@ -6,7 +6,6 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 
 public class Gui {
-    static final Gui_Course gui_course = new Gui_Course();
     static final Gui_Grade gui_grade = new Gui_Grade();
     static final Gui_Teacher gui_teacher = new Gui_Teacher();
     static final Gui_Method gui_method = new Gui_Method();
@@ -313,7 +312,7 @@ public class Gui {
         });
         CourseButton.addActionListener(e -> {
             frame.dispose();
-            gui_course.Course_Add_Frame(conn, user, permissions);
+            gui_method.Add_Frame(conn, Course.class, user, permissions);
         });
         // 将组件添加到面板中
         panel.add(TeacherButton);
@@ -376,6 +375,10 @@ public class Gui {
             StudentButton.addActionListener(e -> {
                 frame.dispose();
                 gui_method.Management_Frame(conn, Student.class, user, permissions);
+            });
+            CourseButton.addActionListener(e -> {
+                frame.dispose();
+                gui_method.Management_Frame(conn, Course.class, user, permissions);
             });
             // 将组件添加到面板中
             panel.add(TeacherButton);
@@ -452,7 +455,7 @@ public class Gui {
         });
         CourseButton.addActionListener(e -> {
             frame.dispose();
-            gui_course.Course_View_Frame(conn, user, permissions);
+            gui_method.View_Frame(conn, Course.class, user, permissions);
         });
         ScoreButton.addActionListener(e -> {
             frame.dispose();

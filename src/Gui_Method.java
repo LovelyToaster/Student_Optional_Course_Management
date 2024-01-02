@@ -16,6 +16,7 @@ public class Gui_Method {
     static final Gui_Methods gui_methods = new Gui_Methods();
     static final Gui_Methods_Student gui_methods_student = new Gui_Methods_Student();
     static final Gui_Methods_Teacher gui_methods_teacher = new Gui_Methods_Teacher();
+    static final Gui_Methods_Course gui_methods_course = new Gui_Methods_Course();
 
     public void Add_Frame(Connection conn, Class<?> c, String user, String permissions) {
         // 创建主窗口
@@ -397,6 +398,8 @@ public class Gui_Method {
                                     gui_methods_student.Management_Modify(frame, dialog, table, confirmButton, conn, selectedRow);
                             case "Teacher" ->
                                     gui_methods_teacher.Management_Modify(frame, dialog, table, confirmButton, conn, selectedRow);
+                            case "Course" ->
+                                    gui_methods_course.Management_Modify(frame, dialog, table, confirmButton, conn, selectedRow);
                         }
                     } else {
                         JOptionPane.showMessageDialog(frame, "请选择要修改的学生!");
@@ -406,10 +409,11 @@ public class Gui_Method {
             searchButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (c.getName().equals("Student"))
-                        gui_methods_student.Management_Search(frame, view, conn);
-                    if (c.getName().equals("Teacher"))
-                        gui_methods_teacher.Management_Search(frame, view, conn);
+                    switch (c.getName()) {
+                        case "Student" -> gui_methods_student.Management_Search(frame, view, conn);
+                        case "Teacher" -> gui_methods_teacher.Management_Search(frame, view, conn);
+                        case "Course" -> gui_methods_course.Management_Search(frame, view, conn);
+                    }
                 }
             });
             refreshButton.addActionListener(new ActionListener() {
