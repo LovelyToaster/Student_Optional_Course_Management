@@ -83,7 +83,7 @@ public class Gui_Method {
             Student stu = new Student();
             //添加院系单选框
             facultiesComboBox = new JComboBox<>();
-            ResultSet rs_faculties = stu.search_student(conn, "faculties", "null");
+            ResultSet rs_faculties = stu.search(conn, "faculties", "null");
             try {
                 while (rs_faculties.next()) {
                     facultiesComboBox.addItem(rs_faculties.getString(1));
@@ -102,10 +102,10 @@ public class Gui_Method {
             DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
             stu_view.setColumnIdentifiers(columnNames);
             table.getTableHeader().setReorderingAllowed(false);
-            ResultSet rs = stu.search_student(conn, "course", "null");
+            ResultSet rs = stu.search(conn, "course", "null");
             try {
                 while (rs.next()) {
-                    stu_view.addRow(stu.get_student(rs, "add"));
+                    stu_view.addRow(stu.get(rs, "add"));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
