@@ -124,7 +124,7 @@ public class Gui {
         if (permissions.equals("normal_root")) {
             panel = new JPanel(new GridLayout(8, 1));
         } else {
-            panel = new JPanel(new GridLayout(6, 1));
+            panel = new JPanel(new GridLayout(7, 1));
         }
         panel.setBackground(new Color(135, 206, 235));
 

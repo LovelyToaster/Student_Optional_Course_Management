@@ -440,7 +440,6 @@ public class Gui_Method {
                 }
             });
             JPanel buttonPanel = new JPanel();
-            //buttonPanel.add(viewButton);
             buttonPanel.add(searchButton);
             buttonPanel.add(modButton);
             buttonPanel.add(deleteButton);
@@ -449,12 +448,13 @@ public class Gui_Method {
             frame.add(scrollPane, BorderLayout.CENTER);
             frame.add(buttonPanel, BorderLayout.SOUTH);
         } else {
-//            ResultSet rs = stu.search_student(conn, "no", user);
-//            try {
-//                rs.next();
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
+            Student stu = new Student();
+            ResultSet rs = stu.search(conn, "no", user);
+            try {
+                rs.next();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
             JPanel panel = new JPanel();
             panel.setLayout(new BorderLayout());
@@ -464,7 +464,7 @@ public class Gui_Method {
             titleLabel.setFont(new Font("宋体", Font.BOLD, 30));
             titleLabel.setForeground(Color.WHITE);
 
-            JPanel management = new JPanel(new GridLayout(4, 2));
+            JPanel management = new JPanel(new GridLayout(5, 2));
             management.setBackground(new Color(135, 206, 235));
 
             JLabel noLabel = new JLabel("学号");
@@ -475,15 +475,15 @@ public class Gui_Method {
             JTextField noTextField = new JTextField(user);
             JTextField nameTextField;
             JTextField facultiesTextField;
-//            try {
-//                nameTextField = new JTextField(rs.getString(2));
-//                facultiesTextField = new JTextField(rs.getString(3));
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
+            try {
+                nameTextField = new JTextField(rs.getString(2));
+                facultiesTextField = new JTextField(rs.getString(3));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             noTextField.setEditable(false);
-//            nameTextField.setEditable(false);
-//            facultiesTextField.setEditable(false);
+            nameTextField.setEditable(false);
+            facultiesTextField.setEditable(false);
 
             String[] columnNames = {"课程名", "任课教师"};
             JTable table = new JTable() {
@@ -494,30 +494,30 @@ public class Gui_Method {
             DefaultTableModel stu_view = (DefaultTableModel) table.getModel();
             stu_view.setColumnIdentifiers(columnNames);
             table.getTableHeader().setReorderingAllowed(false);
-//            rs = stu.search_student(conn, "optional_course_no", user);
-//            try {
-//                if (rs.next()) {
-//                    do {
-//                        stu_view.addRow(stu.get_student(rs, "management"));
-//                    } while (rs.next());
-//                } else
-//                    stu_view.addRow(stu.get_student(rs, "null"));
-//            } catch (SQLException s) {
-//                throw new RuntimeException(s);
-//            }
+            rs = stu.search(conn, "optional_course_no", user);
+            try {
+                if (rs.next()) {
+                    do {
+                        stu_view.addRow(stu.get(rs, "management"));
+                    } while (rs.next());
+                } else
+                    stu_view.addRow(stu.get(rs, "null"));
+            } catch (SQLException s) {
+                throw new RuntimeException(s);
+            }
             JScrollPane optional_course_list = new JScrollPane();
             optional_course_list.setViewportView(table);
 
-//            JButton optional_course_button = getOptionalCourseButton(conn, user, stu_view);
+            JButton optional_course_button = gui_methods_student.getOptionalCourseButton(conn, user, stu_view);
 
             management.add(noLabel);
             management.add(noTextField);
             management.add(nameLabel);
-//            management.add(nameTextField);
+            management.add(nameTextField);
             management.add(facultiesLabel);
-//            management.add(facultiesTextField);
+            management.add(facultiesTextField);
             management.add(optional_courseLabel);
-//            management.add(optional_course_button);
+            management.add(optional_course_button);
 
             JPanel center = new JPanel(new GridLayout(2, 1));
             JPanel optional_course_panel = new JPanel(new GridLayout(1, 1));
