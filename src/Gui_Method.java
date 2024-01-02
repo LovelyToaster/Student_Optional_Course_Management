@@ -3,6 +3,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -312,7 +314,7 @@ public class Gui_Method {
         // 显示主窗口
         frame.setVisible(true);
 
-        gui.addWindowListener(conn, frame, user, permissions);
+        addWindowListener(conn, frame, user, permissions);
     }
 
     public void Management_Frame(Connection conn, Class<?> c, String user, String permissions) {
@@ -531,7 +533,7 @@ public class Gui_Method {
         }
         frame.setVisible(true);
 
-        gui.addWindowListener(conn, frame, user, permissions);
+        addWindowListener(conn, frame, user, permissions);
     }
 
     public void View_Frame(Connection conn, Class<?> c, String user, String permissions) {
@@ -615,7 +617,7 @@ public class Gui_Method {
         // 显示主窗口
         frame.setVisible(true);
 
-        gui.addWindowListener(conn, frame, user, permissions);
+        addWindowListener(conn, frame, user, permissions);
     }
 
     public JButton getViewButton(Connection conn, Class<?> c, JTable table, JFrame frame) {
@@ -704,5 +706,44 @@ public class Gui_Method {
 
         });
         return viewButton;
+    }
+
+    public void addWindowListener(Connection conn, JFrame frame, String user, String permissions) {
+        frame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                gui.Main_Frame(conn, user, permissions);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }
 }

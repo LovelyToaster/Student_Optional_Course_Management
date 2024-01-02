@@ -364,7 +364,7 @@ public class Gui {
         // 显示主窗口
         frame.setVisible(true);
 
-        addWindowListener(conn, frame, user, permissions);
+        gui_method.addWindowListener(conn, frame, user, permissions);
     }
 
     public void Management_Frame(Connection conn, String user, String permissions) {
@@ -435,7 +435,7 @@ public class Gui {
             // 显示主窗口
             frame.setVisible(true);
 
-            addWindowListener(conn, frame, user, permissions);
+            gui_method.addWindowListener(conn, frame, user, permissions);
         } else {
             gui_method.Management_Frame(conn, Student.class, user, permissions);
         }
@@ -518,45 +518,6 @@ public class Gui {
         // 显示主窗口
         frame.setVisible(true);
 
-        addWindowListener(conn, frame, user, permissions);
-    }
-
-    public void addWindowListener(Connection conn, JFrame frame, String user, String permissions) {
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                Main_Frame(conn, user, permissions);
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
+        gui_method.addWindowListener(conn, frame, user, permissions);
     }
 }
